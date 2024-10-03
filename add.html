@@ -11,14 +11,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            /* Removed min-height to allow content to expand naturally */
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
         }
         #back-button {
-            font-size: 16px;
-            padding: 10px 20px;
+            font-size: 20px; /* Increased font size */
+            padding: 12px 24px; /* Increased padding */
             background-color: #c61190;
             color: white;
             border: none;
@@ -33,32 +33,32 @@
         #game-container {
             background-color: white;
             border-radius: 20px;
-            padding: 20px;
+            padding: 30px; /* Increased padding */
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             text-align: center;
-            width: 90%;
-            max-width: 600px;
+            width: 100%; /* Changed from 90% to 100% */
+            max-width: none; /* Removed max-width to allow full width on mobile */
         }
         #question {
-            font-size: 50px;
-            margin-bottom: 20px;
+            font-size: 80px; /* Increased font size */
+            margin-bottom: 30px; /* Increased margin */
         }
         #input-container {
-            margin-bottom: 20px;
+            margin-bottom: 30px; /* Increased margin */
         }
         #input-container label {
-            font-size: 18px;
+            font-size: 24px; /* Increased font size */
         }
         #answer-input {
-            font-size: 24px;
-            padding: 5px;
-            width: 80px;
+            font-size: 36px; /* Increased font size */
+            padding: 10px;
+            width: 120px; /* Increased width */
             text-align: center;
             margin-left: 10px;
         }
         #submit-button {
-            font-size: 18px;
-            padding: 10px 20px;
+            font-size: 24px; /* Increased font size */
+            padding: 12px 24px; /* Increased padding */
             background-color: #c61190;
             color: white;
             border: none;
@@ -70,13 +70,13 @@
             background-color: #a00f7b;
         }
         #message {
-            font-size: 18px;
-            margin-top: 10px;
-            min-height: 27px;
+            font-size: 24px; /* Increased font size */
+            margin-top: 20px; /* Increased margin */
+            min-height: 36px; /* Adjusted min-height */
         }
         #next-button {
-            font-size: 18px;
-            padding: 10px 20px;
+            font-size: 24px; /* Increased font size */
+            padding: 12px 24px; /* Increased padding */
             background-color: #c61190;
             color: white;
             border: none;
@@ -87,17 +87,18 @@
             background-color: #a00f7b;
         }
         #score {
-            font-size: 30px;
+            font-size: 36px; /* Increased font size */
             font-weight: bold;
             color: #c61190;
+            margin-top: 20px; /* Added margin */
         }
         #progress-container {
-            width: 80%;
+            width: 90%; /* Adjusted width */
             background-color: #ddd;
             border-radius: 20px;
             overflow: hidden;
-            height: 20px;
-            margin: 10px auto;
+            height: 30px; /* Increased height */
+            margin: 20px auto; /* Increased margin */
         }
         #progress-bar {
             height: 100%;
@@ -110,10 +111,31 @@
         /* Responsive Design */
         @media (max-width: 600px) {
             #question {
-                font-size: 40px;
+                font-size: 60px; /* Adjusted font size for small screens */
+            }
+            #input-container label {
+                font-size: 20px; /* Adjusted font size */
             }
             #answer-input {
-                width: 60px;
+                width: 80px; /* Adjusted width */
+                font-size: 28px; /* Adjusted font size */
+            }
+            #submit-button {
+                font-size: 20px; /* Adjusted font size */
+                padding: 10px 20px; /* Adjusted padding */
+            }
+            #message {
+                font-size: 20px; /* Adjusted font size */
+            }
+            #next-button {
+                font-size: 20px; /* Adjusted font size */
+                padding: 10px 20px; /* Adjusted padding */
+            }
+            #score {
+                font-size: 28px; /* Adjusted font size */
+            }
+            #progress-container {
+                height: 25px; /* Adjusted height */
             }
         }
     </style>
@@ -220,19 +242,19 @@
                 // Create a table to display incorrect answers
                 let resultHTML = `
                     <h2>Review Your Incorrect Answers:</h2>
-                    <table>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                         <tr>
-                            <th>Question</th>
-                            <th>Your Answer</th>
-                            <th>Correct Answer</th>
+                            <th style="border: 1px solid #c61190; padding: 8px; background-color: #c61190; color: white;">Question</th>
+                            <th style="border: 1px solid #c61190; padding: 8px; background-color: #c61190; color: white;">Your Answer</th>
+                            <th style="border: 1px solid #c61190; padding: 8px; background-color: #c61190; color: white;">Correct Answer</th>
                         </tr>
                 `;
                 incorrectAnswers.forEach(item => {
                     resultHTML += `
                         <tr>
-                            <td>${item.num1} + ${item.num2}</td>
-                            <td>${item.userAnswer}</td>
-                            <td>${item.correctAnswer}</td>
+                            <td style="border: 1px solid #c61190; padding: 8px;">${item.num1} + ${item.num2}</td>
+                            <td style="border: 1px solid #c61190; padding: 8px;">${item.userAnswer}</td>
+                            <td style="border: 1px solid #c61190; padding: 8px;">${item.correctAnswer}</td>
                         </tr>
                     `;
                 });
@@ -242,7 +264,7 @@
                 gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
             }
 
-            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
+            gameContainer.innerHTML += `<button onclick="location.reload()" style="font-size: 24px; padding: 12px 24px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Play Again</button>`;
         }
     </script>
 </body>

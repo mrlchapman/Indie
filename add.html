@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Indie's Adding Game</title>
+    <!-- Include viewport meta tag for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -11,14 +13,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* Removed min-height to allow content to expand naturally */
+            height: 100vh; /* Set height to 100vh to fill the viewport */
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
         }
         #back-button {
-            font-size: 20px; /* Increased font size */
-            padding: 12px 24px; /* Increased padding */
+            font-size: 16px;
+            padding: 10px 20px;
             background-color: #c61190;
             color: white;
             border: none;
@@ -33,32 +35,32 @@
         #game-container {
             background-color: white;
             border-radius: 20px;
-            padding: 30px; /* Increased padding */
+            padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             text-align: center;
-            width: 100%; /* Changed from 90% to 100% */
-            max-width: none; /* Removed max-width to allow full width on mobile */
+            width: 90%;
+            max-width: 600px; /* Set max-width to 600px like the plural game */
         }
         #question {
-            font-size: 80px; /* Increased font size */
-            margin-bottom: 30px; /* Increased margin */
+            font-size: 50px; /* Match font size with #word-display in plural game */
+            margin-bottom: 20px;
         }
         #input-container {
-            margin-bottom: 30px; /* Increased margin */
+            margin-bottom: 20px;
         }
         #input-container label {
-            font-size: 24px; /* Increased font size */
+            font-size: 18px;
         }
         #answer-input {
-            font-size: 36px; /* Increased font size */
-            padding: 10px;
-            width: 120px; /* Increased width */
+            font-size: 24px;
+            padding: 5px;
+            width: 80px;
             text-align: center;
             margin-left: 10px;
         }
         #submit-button {
-            font-size: 24px; /* Increased font size */
-            padding: 12px 24px; /* Increased padding */
+            font-size: 18px;
+            padding: 10px 20px;
             background-color: #c61190;
             color: white;
             border: none;
@@ -70,35 +72,37 @@
             background-color: #a00f7b;
         }
         #message {
-            font-size: 24px; /* Increased font size */
-            margin-top: 20px; /* Increased margin */
-            min-height: 36px; /* Adjusted min-height */
+            font-size: 18px;
+            margin-top: 10px;
+            min-height: 27px;
+            color: green; /* Default message color for positive feedback */
         }
         #next-button {
-            font-size: 24px; /* Increased font size */
-            padding: 12px 24px; /* Increased padding */
+            font-size: 18px;
+            padding: 10px 20px;
             background-color: #c61190;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px; /* Added margin for spacing */
         }
         #next-button:hover {
             background-color: #a00f7b;
         }
         #score {
-            font-size: 36px; /* Increased font size */
+            font-size: 30px; /* Match font size with #score in plural game */
             font-weight: bold;
             color: #c61190;
-            margin-top: 20px; /* Added margin */
+            margin-top: 10px;
         }
         #progress-container {
-            width: 90%; /* Adjusted width */
+            width: 80%; /* Match width with plural game */
             background-color: #ddd;
             border-radius: 20px;
             overflow: hidden;
-            height: 30px; /* Increased height */
-            margin: 20px auto; /* Increased margin */
+            height: 20px;
+            margin: 10px auto;
         }
         #progress-bar {
             height: 100%;
@@ -108,35 +112,20 @@
         .hidden {
             display: none;
         }
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            #question {
-                font-size: 60px; /* Adjusted font size for small screens */
-            }
-            #input-container label {
-                font-size: 20px; /* Adjusted font size */
-            }
-            #answer-input {
-                width: 80px; /* Adjusted width */
-                font-size: 28px; /* Adjusted font size */
-            }
-            #submit-button {
-                font-size: 20px; /* Adjusted font size */
-                padding: 10px 20px; /* Adjusted padding */
-            }
-            #message {
-                font-size: 20px; /* Adjusted font size */
-            }
-            #next-button {
-                font-size: 20px; /* Adjusted font size */
-                padding: 10px 20px; /* Adjusted padding */
-            }
-            #score {
-                font-size: 28px; /* Adjusted font size */
-            }
-            #progress-container {
-                height: 25px; /* Adjusted height */
-            }
+        /* Add styles for the result table to match the plural game */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #c61190;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #c61190;
+            color: white;
         }
     </style>
 </head>
@@ -242,19 +231,19 @@
                 // Create a table to display incorrect answers
                 let resultHTML = `
                     <h2>Review Your Incorrect Answers:</h2>
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <table>
                         <tr>
-                            <th style="border: 1px solid #c61190; padding: 8px; background-color: #c61190; color: white;">Question</th>
-                            <th style="border: 1px solid #c61190; padding: 8px; background-color: #c61190; color: white;">Your Answer</th>
-                            <th style="border: 1px solid #c61190; padding: 8px; background-color: #c61190; color: white;">Correct Answer</th>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
                         </tr>
                 `;
                 incorrectAnswers.forEach(item => {
                     resultHTML += `
                         <tr>
-                            <td style="border: 1px solid #c61190; padding: 8px;">${item.num1} + ${item.num2}</td>
-                            <td style="border: 1px solid #c61190; padding: 8px;">${item.userAnswer}</td>
-                            <td style="border: 1px solid #c61190; padding: 8px;">${item.correctAnswer}</td>
+                            <td>${item.num1} + ${item.num2}</td>
+                            <td>${item.userAnswer}</td>
+                            <td>${item.correctAnswer}</td>
                         </tr>
                     `;
                 });
@@ -264,7 +253,7 @@
                 gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
             }
 
-            gameContainer.innerHTML += `<button onclick="location.reload()" style="font-size: 24px; padding: 12px 24px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">Play Again</button>`;
+            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
         }
     </script>
 </body>

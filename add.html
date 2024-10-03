@@ -127,6 +127,24 @@
             background-color: #c61190;
             color: white;
         }
+        /* Added generic button styles to match the plural game */
+        button {
+            font-size: 30px; /* Increased font size */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #c61190;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a00f7b;
+        }
+        /* Override button styles for submit and next buttons */
+        #submit-button, #next-button {
+            font-size: 18px; /* Original font size */
+        }
     </style>
 </head>
 <body>
@@ -253,6 +271,7 @@
                 gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
             }
 
+            // Updated the "Play Again" button to match the plural game's style
             gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
         }
     </script>

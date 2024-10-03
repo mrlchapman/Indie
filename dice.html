@@ -151,6 +151,24 @@
         #submit-button, #next-button {
             font-size: 18px; /* Original font size */
         }
+        /* Styles for the animated tick */
+        #tick {
+            display: none;
+            margin: 20px auto;
+            width: 100px;
+            height: 100px;
+        }
+        .tick-animate {
+            animation: tick-animation 1s forwards;
+        }
+        @keyframes tick-animation {
+            0% {
+                stroke-dashoffset: 1000;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
         /* Responsive Design */
         @media (max-width: 600px) {
             #dice-container img {
@@ -168,7 +186,7 @@
     <a id="back-button" href="https://mrlchapman.github.io/Indie/">← Back to Games</a>
 
     <div id="game-container">
-        <h1>Arla's Dice Game</h1>
+        <h1>Arla's Dice Sum Game</h1>
         <div id="progress-container">
             <div id="progress-bar"></div>
         </div>
@@ -176,6 +194,11 @@
             <img id="dice1" src="" alt="Dice 1">
             <img id="dice2" src="" alt="Dice 2">
         </div>
+        <!-- Added SVG tick icon -->
+        <svg id="tick" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="34" fill="none" stroke="#c61190" stroke-width="2"/>
+            <path d="M20 37 L30 47 L50 27" fill="none" stroke="#c61190" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+        </svg>
         <div id="input-container">
             <label for="answer-input">Enter the sum of the dice:</label>
             <input type="number" id="answer-input" min="2" max="12">
@@ -193,7 +216,7 @@
         let diceValues = { dice1: 0, dice2: 0 };
         let incorrectAnswers = [];
 
-        // Dice images array with corrected URL for dice 4
+        // Dice images array
         const diceImages = [
             'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Dice-1.svg/1200px-Dice-1.svg.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Dice-2.svg/1200px-Dice-2.svg.png',
@@ -220,6 +243,14 @@
             document.getElementById('message').textContent = '';
             document.getElementById('next-button').classList.add('hidden');
             document.getElementById('submit-button').disabled = false;
+
+            // Hide and reset the tick animation
+            const tick = document.getElementById('tick');
+            tick.style.display = 'none';
+            const tickPath = tick.querySelector('path');
+            tickPath.classList.remove('tick-animate');
+            tickPath.style.strokeDashoffset = 1000;
+
             updateProgressBar();
         }
 
@@ -240,6 +271,13 @@
                 score++;
                 message.textContent = 'Correct! Well done! 🎉';
                 message.style.color = 'green';
+
+                // Show and animate the tick
+                const tick = document.getElementById('tick');
+                tick.style.display = 'block';
+                const tickPath = tick.querySelector('path');
+                tickPath.classList.add('tick-animate');
+
             } else {
                 message.textContent = `Oops! The correct answer is ${correctAnswer}. 🙁`;
                 message.style.color = 'red';

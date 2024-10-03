@@ -1,7 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Arla's Dice Game</title>
+    <!-- Include viewport meta tag for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -10,7 +13,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh; /* Set height to 100vh to fill the viewport */
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
@@ -36,7 +39,7 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             text-align: center;
             width: 90%;
-            max-width: 600px;
+            max-width: 600px; /* Set max-width to 600px to match the plural game */
         }
         #dice-container {
             display: flex;
@@ -78,6 +81,7 @@
             font-size: 18px;
             margin-top: 10px;
             min-height: 27px;
+            color: green; /* Default message color for positive feedback */
         }
         #next-button {
             font-size: 18px;
@@ -87,17 +91,19 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px; /* Added margin-top for spacing */
         }
         #next-button:hover {
             background-color: #a00f7b;
         }
         #score {
-            font-size: 30px;
+            font-size: 30px; /* Match font size with plural game */
             font-weight: bold;
             color: #c61190;
+            margin-top: 10px; /* Added margin-top for consistency */
         }
         #progress-container {
-            width: 80%;
+            width: 80%; /* Match width with plural game */
             background-color: #ddd;
             border-radius: 20px;
             overflow: hidden;
@@ -111,6 +117,21 @@
         }
         .hidden {
             display: none;
+        }
+        /* Add styles for the result table to match the plural game */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #c61190;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #c61190;
+            color: white;
         }
         /* Responsive Design */
         @media (max-width: 600px) {

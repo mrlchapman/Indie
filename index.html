@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indie's Plural Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #game-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+        #word-display {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #image-container {
+            width: 100%;
+            max-width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border: 3px solid #c61190;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #c61190;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a00f7b;
+        }
+        #score {
+            font-size: 20px;
+            font-weight: bold;
+            color: #c61190;
+        }
+        #message {
+            font-size: 18px;
+            margin-top: 10px;
+            min-height: 27px;
+            color: green; /* Default message color for positive feedback */
+        }
+        #progress-container {
+            width: 80%;
+            background-color: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 20px;
+            margin-bottom: 10px;
+        }
+        #progress-bar {
+            height: 100%;
+            background-color: #c61190;
+            width: 0%;
+        }
+        .hidden {
+            display: none;
+        }
+        /* Add styles for the result table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #c61190;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #c61190;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Indie's Plural Game</h1>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="word-display"></div>
+        <div id="image-container">
+            <img id="word-image" alt="Image representing the word" src="" width="200" height="200">
+        </div>
+        <div class="button-container">
+            <button onclick="checkAnswer('s')">Add 's'</button>
+            <button onclick="checkAnswer('es')">Add 'es'</button>
+            <button onclick="checkAnswer('ies')">Add 'ies'</button>
+        </div>
+        <div id="message"></div>
+        <button id="next-button" class="hidden" onclick="nextWord()">Next</button>
+        <div id="score">Score: 0</div>
+    </div>
+
+    <script>
+        const words = [
+            {word: 'Cat', plural: 's', image: 'https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://fdczvxmwwjwpwbeeqcth.supabase.co/storage/v1/object/public/images/dc48110e-ecc5-4b0d-81e0-2bd0bdb47cd1/fe679388-0783-4edb-aab5-ee12ac9413bd.png'},
+            {word: 'Dog', plural: 's', image: 'https://cdn.meiker.io/assets/206891/2023/03/icon_2023030201221763fffa492e73c.png'},
+            {word: 'Box', plural: 'es', image: 'https://img.freepik.com/premium-vector/vector-cute-cardboard-box-cartoon-style_846317-1612.jpg'},
+            {word: 'Bus', plural: 'es', image: 'https://img.freepik.com/premium-vector/cartoon-school-bus-with-happy-students-inside-cartoon-vector-illustration_1080480-128128.jpg'},
+            {word: 'Baby', plural: 'ies', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGtP0UKg2ia4HEY46hB4L59-MQW9hVvFtmDQ&s'},
+            {word: 'Berry', plural: 'ies', image: 'https://img.freepik.com/premium-photo/small-berries-cute-kawaii-cartoon-character_70898-7399.jpg'},
+            {word: 'Tree', plural: 's', image: 'https://img.freepik.com/premium-photo/cartoon-tree-with-happy-face_889779-1034.jpg'},
+            {word: 'Dish', plural: 'es', image: 'https://static.vecteezy.com/system/resources/previews/026/825/898/original/dish-plate-white-cartoon-illustration-vector.jpg'},
+            {word: 'Puppy', plural: 'ies', image: 'https://i.pinimg.com/736x/81/f6/11/81f611a78e99fe0e4d500e5fb2ee37d0.jpg'},
+            {word: 'Car', plural: 's', image: 'https://toyez.pk/cdn/shop/products/Untitled-1_4e56d8e3-c1b5-493a-a454-f76168af5ebd.png?v=1615009568'}
+        ];
+
+        shuffleArray(words); // Shuffle the words array to randomize the order
+
+        let currentWordIndex = 0;
+        let score = 0;
+        let totalQuestions = words.length;
+        let incorrectAnswers = []; // Array to store incorrect answers
+
+        displayWord(); // Initial call to display the first word
+
+        function displayWord() {
+            const wordObj = words[currentWordIndex];
+            document.getElementById('word-display').textContent = wordObj.word;
+            document.getElementById('word-image').src = wordObj.image;
+            document.getElementById('word-image').alt = `Image of ${wordObj.word}`;
+            document.getElementById('message').textContent = '';
+            document.getElementById('next-button').classList.add('hidden');
+            enableAnswerButtons(true);
+            updateProgressBar();
+        }
+
+        function checkAnswer(answer) {
+            enableAnswerButtons(false); // Disable answer buttons after an answer is given
+
+            const wordObj = words[currentWordIndex];
+            let correctPlural;
+            if (wordObj.plural === 'ies') {
+                correctPlural = wordObj.word.slice(0, -1) + 'ies';
+            } else if (wordObj.plural === 'es') {
+                correctPlural = wordObj.word + 'es';
+            } else {
+                correctPlural = wordObj.word + 's';
+            }
+            const message = document.getElementById('message');
+            const nextButton = document.getElementById('next-button');
+
+            if (answer === wordObj.plural) {
+                score++;
+                message.textContent = "Correct! Well done! 🎉";
+                message.style.color = "green";
+                document.getElementById('word-display').textContent = correctPlural; // Display the correct plural
+            } else {
+                message.textContent = `Oops! The correct answer is '${correctPlural}'. 🙁`;
+                message.style.color = "red";
+                // Store the incorrect answer
+                incorrectAnswers.push({
+                    word: wordObj.word,
+                    userAnswer: answer,
+                    correctAnswer: correctPlural
+                });
+            }
+
+            document.getElementById('score').textContent = `Score: ${score}`;
+            nextButton.classList.remove('hidden'); // Show the next button
+        }
+
+        function nextWord() {
+            currentWordIndex++;
+            if (currentWordIndex < totalQuestions) {
+                displayWord();
+            } else {
+                endGame();
+            }
+        }
+
+        function enableAnswerButtons(enable) {
+            document.querySelectorAll('.button-container button').forEach(button => {
+                button.disabled = !enable;
+            });
+        }
+
+        function endGame() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `<h1>Well done!</h1><p>Your final score is: ${score} out of ${totalQuestions}</p>`;
+
+            if (incorrectAnswers.length > 0) {
+                // Create a table to display incorrect answers
+                let resultHTML = `
+                    <h2>Review Your Incorrect Answers:</h2>
+                    <table>
+                        <tr>
+                            <th>Word</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                        </tr>
+                `;
+                incorrectAnswers.forEach(item => {
+                    // Determine the user's plural form
+                    let userPlural;
+                    if (item.userAnswer === 'ies') {
+                        userPlural = item.word.slice(0, -1) + 'ies';
+                    } else if (item.userAnswer === 'es') {
+                        userPlural = item.word + 'es';
+                    } else {
+                        userPlural = item.word + 's';
+                    }
+                    resultHTML += `
+                        <tr>
+                            <td>${item.word}</td>
+                            <td>${userPlural}</td>
+                            <td>${item.correctAnswer}</td>
+                        </tr>
+                    `;
+                });
+                resultHTML += `</table>`;
+                gameContainer.innerHTML += resultHTML;
+            } else {
+                gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
+            }
+
+            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = ((currentWordIndex + 1) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // ES6 destructuring assignment
+            }
+        }
+    </script>
+</body>
+</html>

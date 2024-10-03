@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Indie & Arla's Addition Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #back-button {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #c61190;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            text-decoration: none;
+        }
+        #back-button:hover {
+            background-color: #a00f7b;
+        }
+        #game-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+        #question {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+        #input-container {
+            margin-bottom: 20px;
+        }
+        #input-container label {
+            font-size: 18px;
+        }
+        #answer-input {
+            font-size: 24px;
+            padding: 5px;
+            width: 80px;
+            text-align: center;
+            margin-left: 10px;
+        }
+        #submit-button {
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #c61190;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #submit-button:hover {
+            background-color: #a00f7b;
+        }
+        #message {
+            font-size: 18px;
+            margin-top: 10px;
+            min-height: 27px;
+        }
+        #next-button {
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #c61190;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #next-button:hover {
+            background-color: #a00f7b;
+        }
+        #score {
+            font-size: 30px;
+            font-weight: bold;
+            color: #c61190;
+        }
+        #progress-container {
+            width: 80%;
+            background-color: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 20px;
+            margin: 10px auto;
+        }
+        #progress-bar {
+            height: 100%;
+            background-color: #c61190;
+            width: 0%;
+        }
+        .hidden {
+            display: none;
+        }
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            #question {
+                font-size: 40px;
+            }
+            #answer-input {
+                width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Games Button -->
+    <a id="back-button" href="https://mrlchapman.github.io/Indie/">← Back to Games</a>
+
+    <div id="game-container">
+        <h1>Indie & Arla's Addition Game</h1>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="question"></div>
+        <div id="input-container">
+            <label for="answer-input">Enter your answer:</label>
+            <input type="number" id="answer-input">
+            <button id="submit-button" onclick="checkAnswer()">Submit</button>
+        </div>
+        <div id="message"></div>
+        <button id="next-button" class="hidden" onclick="nextQuestion()">Next</button>
+        <div id="score">Score: 0</div>
+    </div>
+
+    <script>
+        const totalQuestions = 5;
+        let currentQuestion = 1;
+        let score = 0;
+        let numbers = { num1: 0, num2: 0 };
+        let incorrectAnswers = [];
+
+        // Initialize the game
+        displayQuestion();
+
+        function displayQuestion() {
+            // Generate random single-digit numbers (from 0 to 9)
+            numbers.num1 = Math.floor(Math.random() * 10);
+            numbers.num2 = Math.floor(Math.random() * 10);
+
+            // Display the question
+            document.getElementById('question').textContent = `${numbers.num1} + ${numbers.num2} = ?`;
+
+            // Reset input and messages
+            document.getElementById('answer-input').value = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('submit-button').disabled = false;
+            updateProgressBar();
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer-input').value);
+            const correctAnswer = numbers.num1 + numbers.num2;
+            const message = document.getElementById('message');
+
+            if (isNaN(userAnswer)) {
+                message.textContent = 'Please enter a number.';
+                message.style.color = 'red';
+                return;
+            }
+
+            document.getElementById('submit-button').disabled = true;
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                message.textContent = 'Correct! Well done! 🎉';
+                message.style.color = 'green';
+            } else {
+                message.textContent = `Oops! The correct answer is ${correctAnswer}. 🙁`;
+                message.style.color = 'red';
+                // Store the incorrect answer
+                incorrectAnswers.push({
+                    num1: numbers.num1,
+                    num2: numbers.num2,
+                    userAnswer: userAnswer,
+                    correctAnswer: correctAnswer
+                });
+            }
+
+            document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('next-button').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion <= totalQuestions) {
+                displayQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = ((currentQuestion - 1) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function endGame() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalQuestions}</p>`;
+
+            if (incorrectAnswers.length > 0) {
+                // Create a table to display incorrect answers
+                let resultHTML = `
+                    <h2>Review Your Incorrect Answers:</h2>
+                    <table>
+                        <tr>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                        </tr>
+                `;
+                incorrectAnswers.forEach(item => {
+                    resultHTML += `
+                        <tr>
+                            <td>${item.num1} + ${item.num2}</td>
+                            <td>${item.userAnswer}</td>
+                            <td>${item.correctAnswer}</td>
+                        </tr>
+                    `;
+                });
+                resultHTML += `</table>`;
+                gameContainer.innerHTML += resultHTML;
+            } else {
+                gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
+            }
+
+            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
+        }
+    </script>
+</body>
+</html>

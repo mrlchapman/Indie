@@ -65,7 +65,7 @@
             margin-left: 10px;
         }
         #submit-button {
-            font-size: 18px;
+            font-size: 18px; /* Ensure submit button retains original size */
             padding: 10px 20px;
             background-color: #c61190;
             color: white;
@@ -84,7 +84,7 @@
             color: green; /* Default message color for positive feedback */
         }
         #next-button {
-            font-size: 18px;
+            font-size: 18px; /* Ensure next button retains original size */
             padding: 10px 20px;
             background-color: #c61190;
             color: white;
@@ -133,6 +133,24 @@
             background-color: #c61190;
             color: white;
         }
+        /* Added generic button styles to match the plural game */
+        button {
+            font-size: 30px; /* Increased font size */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #c61190;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a00f7b;
+        }
+        /* Override button styles for submit and next buttons */
+        #submit-button, #next-button {
+            font-size: 18px; /* Original font size */
+        }
         /* Responsive Design */
         @media (max-width: 600px) {
             #dice-container img {
@@ -180,7 +198,7 @@
             'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Dice-1.svg/1200px-Dice-1.svg.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Dice-2.svg/1200px-Dice-2.svg.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Dice-3.svg/1200px-Dice-3.svg.png',
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Dice-4.svg/1200px-Dice-4.svg.png', // Corrected URL
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Dice-4.svg/1200px-Dice-4.svg.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Dice-5.svg/1200px-Dice-5.svg.png',
             'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Dice-6.svg/1200px-Dice-6.svg.png'
         ];
@@ -285,6 +303,7 @@
                 gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
             }
 
+            // Updated the "Play Again" button to match the plural game's style
             gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
         }
     </script>

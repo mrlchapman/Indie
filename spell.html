@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Indie's Spelling Game</title>
+    <!-- Include viewport meta tag for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Fill the viewport height */
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #back-button {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #c61190;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            text-decoration: none;
+        }
+        #back-button:hover {
+            background-color: #a00f7b;
+        }
+        #game-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+        #image-container {
+            width: 100%;
+            max-width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border: 3px solid #c61190;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #scrambled-letters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .letter-tile {
+            font-size: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #c61190;
+            color: white;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        #answer-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+            min-height: 60px;
+        }
+        .answer-tile {
+            font-size: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #ddd;
+            color: #333;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #submit-button {
+            font-size: 30px;
+            padding: 10px 20px;
+            background-color: #c61190;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #submit-button:hover {
+            background-color: #a00f7b;
+        }
+        #message {
+            font-size: 18px;
+            margin-top: 10px;
+            min-height: 27px;
+            color: green;
+        }
+        #next-button {
+            font-size: 30px;
+            padding: 10px 20px;
+            background-color: #c61190;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        #next-button:hover {
+            background-color: #a00f7b;
+        }
+        #score {
+            font-size: 30px;
+            font-weight: bold;
+            color: #c61190;
+            margin-top: 10px;
+        }
+        #progress-container {
+            width: 80%;
+            background-color: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 20px;
+            margin: 10px auto;
+        }
+        #progress-bar {
+            height: 100%;
+            background-color: #c61190;
+            width: 0%;
+        }
+        .hidden {
+            display: none;
+        }
+        /* Styles for the animated tick */
+        #tick {
+            display: none;
+            margin: 20px auto;
+            width: 100px;
+            height: 100px;
+        }
+        .tick-animate {
+            animation: tick-animation 1s forwards;
+        }
+        @keyframes tick-animation {
+            0% {
+                stroke-dashoffset: 1000;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+        /* Styles for the result table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #c61190;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #c61190;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Games Button -->
+    <a id="back-button" href="https://mrlchapman.github.io/Indie/">← Back to Games</a>
+
+    <div id="game-container">
+        <h1>Indie's Spelling Game</h1>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="image-container">
+            <img id="word-image" alt="Image representing the word" src="" width="200" height="200">
+        </div>
+        <div id="answer-area"></div>
+        <div id="scrambled-letters"></div>
+        <!-- Added SVG tick icon -->
+        <svg id="tick" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="34" fill="none" stroke="#c61190" stroke-width="2"/>
+            <path d="M20 37 L30 47 L50 27" fill="none" stroke="#c61190" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+        </svg>
+        <button id="submit-button" onclick="checkAnswer()">Submit</button>
+        <div id="message"></div>
+        <button id="next-button" class="hidden" onclick="nextWord()">Next</button>
+        <div id="score">Score: 0</div>
+    </div>
+
+    <script>
+        let words = [
+            {word: 'Cat', image: 'https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://fdczvxmwwjwpwbeeqcth.supabase.co/storage/v1/object/public/images/dc48110e-ecc5-4b0d-81e0-2bd0bdb47cd1/fe679388-0783-4edb-aab5-ee12ac9413bd.png'},
+            {word: 'Dog', image: 'https://cdn.meiker.io/assets/206891/2023/03/icon_2023030201221763fffa492e73c.png'},
+            {word: 'Box', image: 'https://img.freepik.com/premium-vector/vector-cute-cardboard-box-cartoon-style_846317-1612.jpg'},
+            {word: 'Bus', image: 'https://img.freepik.com/premium-vector/cartoon-school-bus-with-happy-students-inside-cartoon-vector-illustration_1080480-128128.jpg'},
+            {word: 'Baby', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGtP0UKg2ia4HEY46hB4L59-MQW9hVvFtmDQ&s'},
+            {word: 'Berry', image: 'https://img.freepik.com/premium-photo/small-berries-cute-kawaii-cartoon-character_70898-7399.jpg'},
+            {word: 'Tree', image: 'https://img.freepik.com/premium-photo/cartoon-tree-with-happy-face_889779-1034.jpg'},
+            {word: 'Dish', image: 'https://static.vecteezy.com/system/resources/previews/026/825/898/original/dish-plate-white-cartoon-illustration-vector.jpg'},
+            {word: 'Puppy', image: 'https://i.pinimg.com/736x/81/f6/11/81f611a78e99fe0e4d500e5fb2ee37d0.jpg'},
+            {word: 'Car', image: 'https://toyez.pk/cdn/shop/products/Untitled-1_4e56d8e3-c1b5-493a-a454-f76168af5ebd.png?v=1615009568'},
+            // New words
+            {word: 'Lunch', image: 'https://banner2.cleanpng.com/20180605/htg/kisspng-packed-lunch-school-meal-lunchbox-breakfast-food-delivery-5b171ce9a3ad70.7445370415282413856704.jpg'},
+            {word: 'Bike', image: 'https://www.shutterstock.com/image-vector/happy-cute-kid-girl-riding-600nw-1555682591.jpg'},
+            {word: 'Beach', image: 'https://i.pinimg.com/550x/da/4e/a9/da4ea9d88afb7a7fbbdde3b9f1fadc72.jpg'},
+            {word: 'Church', image: 'https://static.vecteezy.com/system/resources/previews/034/812/322/non_2x/christian-church-colored-cartoon-illustration-free-vector.jpg'},
+            {word: 'Flower', image: 'https://as2.ftcdn.net/v2/jpg/05/57/32/01/1000_F_557320121_KdMmeKo3hawtGPhNmfuIoZTUtHXCIit1.jpg'}
+        ];
+
+        shuffleArray(words); // Shuffle the words array to randomize the order
+        words = words.slice(0, 10); // Limit to 10 words
+
+        let currentWordIndex = 0;
+        let score = 0;
+        let totalQuestions = words.length;
+        let incorrectAnswers = []; // Array to store incorrect answers
+
+        displayWord(); // Initial call to display the first word
+
+        function displayWord() {
+            const wordObj = words[currentWordIndex];
+            const word = wordObj.word.toUpperCase();
+            const scrambled = shuffleArray(word.split('')).join('');
+
+            // Display image
+            document.getElementById('word-image').src = wordObj.image;
+            document.getElementById('word-image').alt = `Image of ${wordObj.word}`;
+
+            // Reset areas
+            document.getElementById('answer-area').innerHTML = '';
+            document.getElementById('scrambled-letters').innerHTML = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('submit-button').disabled = false;
+
+            // Hide and reset the tick animation
+            const tick = document.getElementById('tick');
+            tick.style.display = 'none';
+            const tickPath = tick.querySelector('path');
+            tickPath.classList.remove('tick-animate');
+            tickPath.style.strokeDashoffset = 1000;
+
+            // Create answer tiles
+            for (let i = 0; i < word.length; i++) {
+                const tile = document.createElement('div');
+                tile.classList.add('answer-tile');
+                tile.dataset.index = i;
+                document.getElementById('answer-area').appendChild(tile);
+            }
+
+            // Create scrambled letter tiles
+            for (let i = 0; i < scrambled.length; i++) {
+                const tile = document.createElement('div');
+                tile.classList.add('letter-tile');
+                tile.textContent = scrambled[i];
+                tile.onclick = () => selectLetter(tile);
+                document.getElementById('scrambled-letters').appendChild(tile);
+            }
+
+            updateProgressBar();
+        }
+
+        function selectLetter(tile) {
+            const emptyTile = document.querySelector('.answer-tile:not([data-letter])');
+            if (emptyTile) {
+                emptyTile.textContent = tile.textContent;
+                emptyTile.dataset.letter = tile.textContent;
+                tile.style.visibility = 'hidden';
+            }
+        }
+
+        function checkAnswer() {
+            const wordObj = words[currentWordIndex];
+            const word = wordObj.word.toUpperCase();
+            const userAnswer = Array.from(document.querySelectorAll('.answer-tile'))
+                .map(tile => tile.dataset.letter || '')
+                .join('');
+            const message = document.getElementById('message');
+
+            document.getElementById('submit-button').disabled = true;
+
+            if (userAnswer === word) {
+                score++;
+                message.textContent = 'Correct! Well done! 🎉';
+                message.style.color = 'green';
+
+                // Show and animate the tick
+                const tick = document.getElementById('tick');
+                tick.style.display = 'block';
+                const tickPath = tick.querySelector('path');
+                tickPath.classList.add('tick-animate');
+
+            } else {
+                message.textContent = `Oops! The correct spelling is '${wordObj.word}'. 🙁`;
+                message.style.color = 'red';
+                // Store the incorrect answer
+                incorrectAnswers.push({
+                    word: wordObj.word,
+                    userAnswer: userAnswer
+                });
+            }
+
+            document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('next-button').classList.remove('hidden');
+        }
+
+        function nextWord() {
+            currentWordIndex++;
+            if (currentWordIndex < totalQuestions) {
+                displayWord();
+            } else {
+                endGame();
+            }
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = ((currentWordIndex) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function endGame() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalQuestions}</p>`;
+
+            if (incorrectAnswers.length > 0) {
+                // Create a table to display incorrect answers
+                let resultHTML = `
+                    <h2>Review Your Incorrect Answers:</h2>
+                    <table>
+                        <tr>
+                            <th>Word</th>
+                            <th>Your Answer</th>
+                            <th>Correct Spelling</th>
+                        </tr>
+                `;
+                incorrectAnswers.forEach(item => {
+                    resultHTML += `
+                        <tr>
+                            <td>${item.word}</td>
+                            <td>${item.userAnswer}</td>
+                            <td>${item.word}</td>
+                        </tr>
+                    `;
+                });
+                resultHTML += `</table>`;
+                gameContainer.innerHTML += resultHTML;
+            } else {
+                gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
+            }
+
+            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
+        }
+
+        function shuffleArray(array) {
+            const newArray = array.slice();
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+    </script>
+</body>
+</html>

@@ -95,14 +95,14 @@
             justify-content: center;
         }
         #submit-button {
-            font-size: 30px;
+            font-size: 18px; /* Ensure submit button retains original size */
             padding: 10px 20px;
             background-color: #c61190;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            margin-left: 10px;
         }
         #submit-button:hover {
             background-color: #a00f7b;
@@ -114,7 +114,7 @@
             color: green;
         }
         #next-button {
-            font-size: 30px;
+            font-size: 18px; /* Ensure next button retains original size */
             padding: 10px 20px;
             background-color: #c61190;
             color: white;
@@ -122,7 +122,6 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
-            transition: background-color 0.3s;
         }
         #next-button:hover {
             background-color: #a00f7b;
@@ -182,6 +181,24 @@
             background-color: #c61190;
             color: white;
         }
+        /* Added generic button styles to match the other games */
+        button {
+            font-size: 30px; /* Increased font size */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #c61190;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a00f7b;
+        }
+        /* Override button styles for submit and next buttons */
+        #submit-button, #next-button {
+            font-size: 18px; /* Original font size */
+        }
     </style>
 </head>
 <body>
@@ -229,7 +246,7 @@
             {word: 'Flower', image: 'https://as2.ftcdn.net/v2/jpg/05/57/32/01/1000_F_557320121_KdMmeKo3hawtGPhNmfuIoZTUtHXCIit1.jpg'}
         ];
 
-        shuffleArray(words); // Shuffle the words array to randomize the order
+        words = shuffleArray(words); // Shuffle the words array to randomize the order
         words = words.slice(0, 10); // Limit to 10 words
 
         let currentWordIndex = 0;
@@ -242,7 +259,7 @@
         function displayWord() {
             const wordObj = words[currentWordIndex];
             const word = wordObj.word.toUpperCase();
-            const scrambled = shuffleArray(word.split('')).join('');
+            const scrambled = shuffleArray(word.split(''));
 
             // Display image
             document.getElementById('word-image').src = wordObj.image;
@@ -253,6 +270,7 @@
             document.getElementById('scrambled-letters').innerHTML = '';
             document.getElementById('message').textContent = '';
             document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('submit-button').classList.remove('hidden');
             document.getElementById('submit-button').disabled = false;
 
             // Hide and reset the tick animation
@@ -300,6 +318,7 @@
             const message = document.getElementById('message');
 
             document.getElementById('submit-button').disabled = true;
+            document.getElementById('submit-button').classList.add('hidden');
 
             if (userAnswer === word) {
                 score++;
@@ -371,6 +390,7 @@
                 gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
             }
 
+            // Updated the "Play Again" button to match the other games' style
             gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
         }
 

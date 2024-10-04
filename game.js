@@ -19,5 +19,9 @@ let words = [
     // New words
     {word: 'table', image: 'https://img.freepik.com/premium-vector/hand-drawn-wooden-round-table-cartoon-vector-illustration-clipart-white-background_191095-38135.jpg'},
     {word: 'phone', image: 'https://st4.depositphotos.com/24038622/27074/v/450/depositphotos_270745056-stock-illustration-smartphone-mascot-cartoon-illustration-smartphone.jpg'},
-    {word: 'bed', image: 'https://i.etsystatic.com/41972288/r/il/b5e2d2/5863137677/il_570xN.5863137677_r7mu.jpg'}
+    {word: 'bed', image: 'https://i.etsystatic.com/41972288/r/il/b5e2d2/5863137677/il_570xN.5863137677_r7mu.jpg'},
+    {word: 'door', image: 'https://static.vecteezy.com/system/resources/previews/005/279/029/original/antique-wooden-door-stone-cladding-wood-texture-cartoon-style-isolated-illustration-vector.jpg'},
+    {word: 'bath', image: 'https://media.istockphoto.com/id/843120518/vector/bathtub-with-foam-bubbles-and-shower-vector-illustration-isolated-on-white-flat-cartoon.jpg?s=612x612&w=0&k=20&c=wGCiIg7yA6Rzfbh8-hAMIvSQ7b-Ly1cK-p7vGa9rgns='},
+    {word: 'eye', image: 'https://images.saymedia-content.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:eco%2Cw_1200/MTc0MTY5OTE0NTYxODAwMDYw/how-to-draw-a-cartoon-eye.jpg'},
+    {word: 'plant', image: 'https://img.freepik.com/premium-photo/cute-plant-pot_1029469-198219.jpg'}
 ];

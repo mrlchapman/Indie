@@ -413,6 +413,24 @@
             }
             return newArray;
         }
+
+        function selectLetter(tile) {
+    const emptyTile = document.querySelector('.answer-tile:not([data-letter])');
+    if (emptyTile) {
+        emptyTile.textContent = tile.textContent;
+        emptyTile.dataset.letter = tile.textContent;
+        emptyTile.onclick = () => deselectLetter(emptyTile, tile); // Add ability to deselect
+        tile.style.visibility = 'hidden';
+    }
+}
+
+function deselectLetter(answerTile, scrambledTile) {
+    answerTile.textContent = ''; // Clear the answer tile
+    delete answerTile.dataset.letter; // Remove the letter data attribute
+    answerTile.onclick = null; // Remove the event listener
+
+    scrambledTile.style.visibility = 'visible'; // Make the corresponding scrambled letter visible again
+}
     </script>
 </body>
 </html>

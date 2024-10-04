@@ -90,6 +90,7 @@
                 const tile = document.createElement('div');
                 tile.classList.add('letter-tile');
                 tile.textContent = scrambled[i];
+                tile.dataset.index = i; // Assign an index to each scrambled letter tile
                 tile.onclick = () => selectLetter(tile);
                 document.getElementById('scrambled-letters').appendChild(tile);
             }

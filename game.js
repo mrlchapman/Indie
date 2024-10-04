@@ -19,5 +19,5 @@ let words = [
         // New words
     {word: 'table', image: 'https://img.freepik.com/premium-vector/hand-drawn-wooden-round-table-cartoon-vector-illustration-clipart-white-background_191095-38135.jpg'},
     {word: 'phone', image: 'https://st4.depositphotos.com/24038622/27074/v/450/depositphotos_270745056-stock-illustration-smartphone-mascot-cartoon-illustration-smartphone.jpg'},
-    {word: 'bed', image: 'https://i.etsystatic.com/41972288/r/il/b5e2d2/5863137677/il_570xN.5863137677_r7mu.jpg'},
+    {word: 'bed', image: 'https://i.etsystatic.com/41972288/r/il/b5e2d2/5863137677/il_570xN.5863137677_r7mu.jpg'}
 ];

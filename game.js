@@ -11,10 +11,13 @@ let words = [
     {word: 'dish', image: 'https://static.vecteezy.com/system/resources/previews/026/825/898/original/dish-plate-white-cartoon-illustration-vector.jpg'},
     {word: 'puppy', image: 'https://i.pinimg.com/736x/81/f6/11/81f611a78e99fe0e4d500e5fb2ee37d0.jpg'},
     {word: 'car', image: 'https://toyez.pk/cdn/shop/products/Untitled-1_4e56d8e3-c1b5-493a-a454-f76168af5ebd.png?v=1615009568'},
-    // New words
     {word: 'lunch', image: 'https://banner2.cleanpng.com/20180605/htg/kisspng-packed-lunch-school-meal-lunchbox-breakfast-food-delivery-5b171ce9a3ad70.7445370415282413856704.jpg'},
     {word: 'bike', image: 'https://www.shutterstock.com/image-vector/happy-cute-kid-girl-riding-600nw-1555682591.jpg'},
     {word: 'beach', image: 'https://i.pinimg.com/550x/da/4e/a9/da4ea9d88afb7a7fbbdde3b9f1fadc72.jpg'},
     {word: 'church', image: 'https://static.vecteezy.com/system/resources/previews/034/812/322/non_2x/christian-church-colored-cartoon-illustration-free-vector.jpg'},
     {word: 'flower', image: 'https://as2.ftcdn.net/v2/jpg/05/57/32/01/1000_F_557320121_KdMmeKo3hawtGPhNmfuIoZTUtHXCIit1.jpg'}
+        // New words
+    {word: 'table', image: 'https://img.freepik.com/premium-vector/hand-drawn-wooden-round-table-cartoon-vector-illustration-clipart-white-background_191095-38135.jpg'}
+    {word: 'phone', image: 'https://st4.depositphotos.com/24038622/27074/v/450/depositphotos_270745056-stock-illustration-smartphone-mascot-cartoon-illustration-smartphone.jpg'}
+    {word: 'bed', image: 'https://i.etsystatic.com/41972288/r/il/b5e2d2/5863137677/il_570xN.5863137677_r7mu.jpg'}
 ];

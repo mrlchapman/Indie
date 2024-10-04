@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indie's Plural Game</title>
     <!-- Link to the external stylesheet -->
     <link rel="stylesheet" href="styles.css">
@@ -32,21 +31,37 @@
 
     <!-- Include the external words from game.js -->
     <script src="game.js"></script>
-    
+
     <!-- Inline script for the game logic -->
     <script>
-        shuffleArray(words); // Shuffle the words array to randomize the order
-        words = words.slice(0, 10); // Limit to 10 words
+        // Create pluralWords array by adding the 'plural' property to each word
+        const pluralWords = words.map(wordObj => {
+            const word = wordObj.word.toLowerCase();
+            let pluralRule = 's'; // Default rule
+
+            // Determine the pluralization rule
+            if (word.endsWith('y') && !['a', 'e', 'i', 'o', 'u'].includes(word[word.length - 2])) {
+                pluralRule = 'ies';
+            } else if (word.endsWith('s') || word.endsWith('x') || word.endsWith('z') || word.endsWith('ch') || word.endsWith('sh')) {
+                pluralRule = 'es';
+            }
+
+            return { ...wordObj, plural: pluralRule };
+        });
+
+        // Shuffle and select words for the game
+        shuffleArray(pluralWords);
+        const gameWords = pluralWords.slice(0, 10);
 
         let currentWordIndex = 0;
         let score = 0;
-        let totalQuestions = words.length;
+        let totalQuestions = gameWords.length;
         let incorrectAnswers = []; // Array to store incorrect answers
 
         displayWord(); // Initial call to display the first word
 
         function displayWord() {
-            const wordObj = words[currentWordIndex];
+            const wordObj = gameWords[currentWordIndex];
             document.getElementById('word-display').textContent = wordObj.word;
             document.getElementById('word-image').src = wordObj.image;
             document.getElementById('word-image').alt = `Image of ${wordObj.word}`;
@@ -59,17 +74,19 @@
         function checkAnswer(answer) {
             enableAnswerButtons(false); // Disable answer buttons after an answer is given
 
-            const wordObj = words[currentWordIndex];
+            const wordObj = gameWords[currentWordIndex];
+            const word = wordObj.word.toLowerCase();
             let correctPlural;
+
             if (wordObj.plural === 'ies') {
-                correctPlural = wordObj.word.slice(0, -1) + 'ies';
+                correctPlural = word.slice(0, -1) + 'ies';
             } else if (wordObj.plural === 'es') {
-                correctPlural = wordObj.word + 'es';
+                correctPlural = word + 'es';
             } else {
-                correctPlural = wordObj.word + 's';
+                correctPlural = word + 's';
             }
+
             const message = document.getElementById('message');
-            const nextButton = document.getElementById('next-button');
 
             if (answer === wordObj.plural) {
                 score++;
@@ -81,14 +98,14 @@
                 message.style.color = "red";
                 // Store the incorrect answer
                 incorrectAnswers.push({
-                    word: wordObj.word,
+                    word: word,
                     userAnswer: answer,
                     correctAnswer: correctPlural
                 });
             }
 
             document.getElementById('score').textContent = `Score: ${score}`;
-            nextButton.classList.remove('hidden'); // Show the next button
+            document.getElementById('next-button').classList.remove('hidden'); // Show the next button
         }
 
         function nextWord() {
@@ -122,7 +139,6 @@
                         </tr>
                 `;
                 incorrectAnswers.forEach(item => {
-                    // Determine the user's plural form
                     let userPlural;
                     if (item.userAnswer === 'ies') {
                         userPlural = item.word.slice(0, -1) + 'ies';
@@ -150,14 +166,14 @@
 
         function updateProgressBar() {
             const progressBar = document.getElementById('progress-bar');
-            const progress = ((currentWordIndex + 1) / totalQuestions) * 100;
+            const progress = ((currentWordIndex) / totalQuestions) * 100;
             progressBar.style.width = `${progress}%`;
         }
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]]; // ES6 destructuring assignment
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
     </script>

@@ -74,6 +74,7 @@
             justify-content: center;
             cursor: pointer;
             user-select: none;
+            text-transform: lowercase; /* Ensure letters are displayed in lowercase */
         }
         #answer-area {
             display: flex;
@@ -93,6 +94,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-transform: lowercase; /* Ensure letters are displayed in lowercase */
+        }
+        #button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* Space between buttons */
+            margin-bottom: 10px; /* Reduced space below the buttons */
         }
         #submit-button {
             font-size: 18px; /* Ensure submit button retains original size */
@@ -102,7 +111,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-left: 10px;
         }
         #submit-button:hover {
             background-color: #a00f7b;
@@ -121,7 +129,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
         }
         #next-button:hover {
             background-color: #a00f7b;
@@ -176,10 +183,12 @@
             border: 1px solid #c61190;
             padding: 8px;
             text-align: center;
+            text-transform: lowercase; /* Ensure text is displayed in lowercase */
         }
         th {
             background-color: #c61190;
             color: white;
+            text-transform: capitalize; /* Capitalize headers */
         }
         /* Added generic button styles to match the other games */
         button {
@@ -220,9 +229,11 @@
             <circle cx="35" cy="35" r="34" fill="none" stroke="#c61190" stroke-width="2"/>
             <path d="M20 37 L30 47 L50 27" fill="none" stroke="#c61190" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000"/>
         </svg>
-        <button id="submit-button" onclick="checkAnswer()">Submit</button>
+        <div id="button-container">
+            <button id="submit-button" onclick="checkAnswer()">Submit</button>
+            <button id="next-button" class="hidden" onclick="nextWord()">Next</button>
+        </div>
         <div id="message"></div>
-        <button id="next-button" class="hidden" onclick="nextWord()">Next</button>
         <div id="score">Score: 0</div>
     </div>
 
@@ -258,7 +269,7 @@
 
         function displayWord() {
             const wordObj = words[currentWordIndex];
-            const word = wordObj.word.toUpperCase();
+            const word = wordObj.word.toLowerCase(); // Convert to lowercase
             const scrambled = shuffleArray(word.split(''));
 
             // Display image
@@ -311,7 +322,7 @@
 
         function checkAnswer() {
             const wordObj = words[currentWordIndex];
-            const word = wordObj.word.toUpperCase();
+            const word = wordObj.word.toLowerCase();
             const userAnswer = Array.from(document.querySelectorAll('.answer-tile'))
                 .map(tile => tile.dataset.letter || '')
                 .join('');
@@ -332,11 +343,11 @@
                 tickPath.classList.add('tick-animate');
 
             } else {
-                message.textContent = `Oops! The correct spelling is '${wordObj.word}'. 🙁`;
+                message.textContent = `Oops! The correct spelling is '${word}'. 🙁`;
                 message.style.color = 'red';
                 // Store the incorrect answer
                 incorrectAnswers.push({
-                    word: wordObj.word,
+                    word: word,
                     userAnswer: userAnswer
                 });
             }

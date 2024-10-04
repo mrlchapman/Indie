@@ -81,6 +81,7 @@
                 const tile = document.createElement('div');
                 tile.classList.add('answer-tile');
                 tile.dataset.index = i;
+                tile.onclick = () => deselectLetter(tile); // Add click event to deselect letter
                 document.getElementById('answer-area').appendChild(tile);
             }
 
@@ -101,7 +102,20 @@
             if (emptyTile) {
                 emptyTile.textContent = tile.textContent;
                 emptyTile.dataset.letter = tile.textContent;
-                tile.style.visibility = 'hidden';
+                emptyTile.dataset.scrambledIndex = tile.dataset.index; // Store the index to reference scrambled letter
+                tile.style.visibility = 'hidden'; // Hide the selected letter in the scrambled section
+            }
+        }
+
+        function deselectLetter(tile) {
+            if (tile.dataset.letter) { // Only act if a letter has been selected
+                const scrambledIndex = tile.dataset.scrambledIndex; // Get the original scrambled letter index
+                const scrambledTile = document.querySelector(`.letter-tile[data-index="${scrambledIndex}"]`);
+                scrambledTile.style.visibility = 'visible'; // Make the original letter visible again
+
+                tile.textContent = ''; // Clear the answer tile
+                delete tile.dataset.letter; // Remove the letter from the tile's dataset
+                delete tile.dataset.scrambledIndex; // Remove the reference to the scrambled letter
             }
         }
 

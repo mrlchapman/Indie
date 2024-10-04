@@ -4,122 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indie's Plural Game</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f8ff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        #back-button {
-            font-size: 16px;
-            padding: 10px 20px;
-            background-color: #c61190;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            text-decoration: none;
-        }
-        #back-button:hover {
-            background-color: #a00f7b;
-        }
-        #game-container {
-            background-color: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 600px;
-        }
-        #word-display {
-            font-size: 50px;
-            margin-bottom: 20px;
-        }
-        #image-container {
-            width: 100%;
-            max-width: 200px;
-            height: 200px;
-            margin: 0 auto 20px;
-            border: 3px solid #c61190;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        #image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        button {
-            font-size: 30px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #c61190;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #a00f7b;
-        }
-        #score {
-            font-size: 30px;
-            font-weight: bold;
-            color: #c61190;
-        }
-        #message {
-            font-size: 18px;
-            margin-top: 10px;
-            min-height: 27px;
-            color: green; /* Default message color for positive feedback */
-        }
-        #progress-container {
-            width: 80%;
-            background-color: #ddd;
-            border-radius: 20px;
-            overflow: hidden;
-            height: 20px;
-            margin-bottom: 10px;
-        }
-        #progress-bar {
-            height: 100%;
-            background-color: #c61190;
-            width: 0%;
-        }
-        .hidden {
-            display: none;
-        }
-        /* Add styles for the result table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #c61190;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #c61190;
-            color: white;
-        }
-    </style>
+    <!-- Link to the external stylesheet -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Back to Games Button -->
@@ -144,26 +30,11 @@
         <div id="score">Score: 0</div>
     </div>
 
+    <!-- Include the external words from game.js -->
+    <script src="game.js"></script>
+    
+    <!-- Inline script for the game logic -->
     <script>
-        let words = [
-        {word: 'Cat', plural: 's', image: 'https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://fdczvxmwwjwpwbeeqcth.supabase.co/storage/v1/object/public/images/dc48110e-ecc5-4b0d-81e0-2bd0bdb47cd1/fe679388-0783-4edb-aab5-ee12ac9413bd.png'},
-            {word: 'Dog', plural: 's', image: 'https://cdn.meiker.io/assets/206891/2023/03/icon_2023030201221763fffa492e73c.png'},
-            {word: 'Box', plural: 'es', image: 'https://img.freepik.com/premium-vector/vector-cute-cardboard-box-cartoon-style_846317-1612.jpg'},
-            {word: 'Bus', plural: 'es', image: 'https://img.freepik.com/premium-vector/cartoon-school-bus-with-happy-students-inside-cartoon-vector-illustration_1080480-128128.jpg'},
-            {word: 'Baby', plural: 'ies', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGtP0UKg2ia4HEY46hB4L59-MQW9hVvFtmDQ&s'},
-            {word: 'Berry', plural: 'ies', image: 'https://img.freepik.com/premium-photo/small-berries-cute-kawaii-cartoon-character_70898-7399.jpg'},
-            {word: 'Tree', plural: 's', image: 'https://img.freepik.com/premium-photo/cartoon-tree-with-happy-face_889779-1034.jpg'},
-            {word: 'Dish', plural: 'es', image: 'https://static.vecteezy.com/system/resources/previews/026/825/898/original/dish-plate-white-cartoon-illustration-vector.jpg'},
-            {word: 'Puppy', plural: 'ies', image: 'https://i.pinimg.com/736x/81/f6/11/81f611a78e99fe0e4d500e5fb2ee37d0.jpg'},
-            {word: 'Car', plural: 's', image: 'https://toyez.pk/cdn/shop/products/Untitled-1_4e56d8e3-c1b5-493a-a454-f76168af5ebd.png?v=1615009568'},
-            // New words
-            {word: 'Lunch', plural: 'es', image: 'https://banner2.cleanpng.com/20180605/htg/kisspng-packed-lunch-school-meal-lunchbox-breakfast-food-delivery-5b171ce9a3ad70.7445370415282413856704.jpg'},
-            {word: 'Bike', plural: 's', image: 'https://www.shutterstock.com/image-vector/happy-cute-kid-girl-riding-600nw-1555682591.jpg'},
-            {word: 'Beach', plural: 'es', image: 'https://i.pinimg.com/550x/da/4e/a9/da4ea9d88afb7a7fbbdde3b9f1fadc72.jpg'},
-            {word: 'Church', plural: 'es', image: 'https://static.vecteezy.com/system/resources/previews/034/812/322/non_2x/christian-church-colored-cartoon-illustration-free-vector.jpg'},
-            {word: 'Flower', plural: 's', image: 'https://as2.ftcdn.net/v2/jpg/05/57/32/01/1000_F_557320121_KdMmeKo3hawtGPhNmfuIoZTUtHXCIit1.jpg'}
-        ];
-
         shuffleArray(words); // Shuffle the words array to randomize the order
         words = words.slice(0, 10); // Limit to 10 words
 

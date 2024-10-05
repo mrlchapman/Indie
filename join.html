@@ -123,6 +123,9 @@
         let score = 0;
         let totalSentences = sentences.length;
 
+        // Shuffle the sentences to display them in random order
+        shuffleArray(sentences);
+
         displaySentence();
 
         function displaySentence() {
@@ -160,15 +163,21 @@
             const answerArea = document.getElementById('answer-area');
             answerArea.addEventListener('dragover', dragOver);
             answerArea.addEventListener('drop', dropWord);
+
+            // Enable rearranging words within the answer area
+            answerArea.addEventListener('dragover', dragOver);
+            answerArea.addEventListener('drop', dropWordInAnswerArea);
         }
 
+        let draggedElement = null;
+
         function dragStart(event) {
+            draggedElement = event.target;
             event.dataTransfer.setData('text/plain', event.target.textContent);
             // For Firefox compatibility
             event.dataTransfer.dropEffect = 'move';
-            // Store a reference to the dragged element
+            // To make the dragged element visible during drag
             event.dataTransfer.setDragImage(event.target, 0, 0);
-            draggedElement = event.target;
         }
 
         function dragOver(event) {
@@ -199,6 +208,25 @@
             draggedElement.remove();
         }
 
+        function dropWordInAnswerArea(event) {
+            event.preventDefault();
+            if (draggedElement && draggedElement.parentElement.id === 'answer-area') {
+                const target = event.target;
+                if (target.classList.contains('word-tile') && target.parentElement.id === 'answer-area') {
+                    const answerArea = document.getElementById('answer-area');
+                    const draggedIndex = Array.from(answerArea.children).indexOf(draggedElement);
+                    const targetIndex = Array.from(answerArea.children).indexOf(target);
+                    if (draggedIndex !== -1 && targetIndex !== -1) {
+                        if (draggedIndex < targetIndex) {
+                            answerArea.insertBefore(draggedElement, target.nextSibling);
+                        } else {
+                            answerArea.insertBefore(draggedElement, target);
+                        }
+                    }
+                }
+            }
+        }
+
         function removeWord(event) {
             const wordTile = event.target;
             // Remove from answer area
@@ -224,7 +252,7 @@
                 message.textContent = 'Correct! Well done! 🎉';
                 message.style.color = 'green';
             } else {
-                message.textContent = `Oops! That's not quite right. Try again.`;
+                message.textContent = `Oops! That's not quite right. Try rearranging the words.`;
                 message.style.color = 'red';
                 return; // Allow the player to try again
             }
@@ -274,7 +302,6 @@
         let touchWordTile = null;
         let initialX = null;
         let initialY = null;
-        let draggedElement = null;
 
         function touchStart(event) {
             touchWordTile = event.target;
@@ -313,7 +340,8 @@
                 wordTile.addEventListener('touchmove', touchMove);
                 wordTile.addEventListener('touchend', touchEndAnswer);
                 wordTile.addEventListener('dblclick', removeWord);
-                answerArea.appendChild(wordTile);
+                wordTile.addEventListener('dragstart', dragStart);
+                document.getElementById('answer-area').appendChild(wordTile);
                 touchWordTile.remove();
             }
             touchWordTile = null;

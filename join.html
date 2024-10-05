@@ -1,48 +1,327 @@
-function dropWord(event) {
-    event.preventDefault();
-    const word = event.dataTransfer.getData('text/plain');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Indie's Sentence Building Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to shared styles.css -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Add game-specific styles -->
+    <style>
+        /* Styles specific to the sentence game */
+        #image-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #scrambled-words {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        #answer-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .word-tile {
+            font-size: 24px;
+            padding: 10px 15px;
+            background-color: #c61190;
+            color: white;
+            border-radius: 5px;
+            cursor: move;
+            user-select: none;
+        }
+        .empty-slot {
+            width: 100px;
+            height: 50px;
+            border: 2px dashed #c61190;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        #message {
+            font-size: 18px;
+            margin-top: 10px;
+            color: green;
+            text-align: center;
+            min-height: 24px;
+        }
+        /* Additional styles for buttons */
+        #button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #button-container button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #c61190;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #button-container button.hidden {
+            display: none;
+        }
+        /* Style for the progress bar */
+        #progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            height: 10px;
+            margin-bottom: 20px;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #c61190;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Games Button -->
+    <a id="back-button" href="https://mrlchapman.github.io/Indie/">← Back to Games</a>
 
-    // Check if dropping into the answer area or onto another word tile
-    if (event.target.id === 'answer-area' || event.target.classList.contains('word-tile')) {
-        let wordTile;
+    <div id="game-container">
+        <h1>Indie's Sentence Building Game</h1>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="image-container">
+            <img id="sentence-image" alt="Image representing the sentence" src="" width="300" height="200">
+        </div>
+        <div id="scrambled-words">
+            <!-- Scrambled words will appear here -->
+        </div>
+        <div id="answer-area">
+            <!-- Empty slots will be here -->
+        </div>
+        <div id="button-container">
+            <button id="check-button" onclick="checkSentence()">Check Sentence</button>
+            <button id="next-button" class="hidden" onclick="nextSentence()">Next</button>
+        </div>
+        <div id="message"></div>
+        <div id="score">Score: 0</div>
+    </div>
 
-        // If dragging from scrambled words
-        if (draggedElement.parentElement.id === 'scrambled-words') {
-            // Create a new word tile in the answer area
-            wordTile = document.createElement('div');
-            wordTile.classList.add('word-tile');
-            wordTile.textContent = word;
+    <!-- Include the sentences array directly in the HTML -->
+    <script>
+        let sentences = [
+            {
+                image: 'images/tree.png',
+                words: ['The', 'tree', 'is', 'tall'],
+                correctOrder: ['The', 'tree', 'is', 'tall']
+            },
+            {
+                image: 'images/bike.png',
+                words: ['rides', 'bike', 'The', 'girl'],
+                correctOrder: ['The', 'girl', 'rides', 'bike']
+            },
+            {
+                image: 'images/tap.png',
+                words: ['is', 'on', 'The', 'tap'],
+                correctOrder: ['The', 'tap', 'is', 'on']
+            },
+            // Add more sentences as desired
+        ];
+    </script>
+
+    <!-- Game script -->
+    <script>
+        let currentSentenceIndex = 0;
+        let score = 0;
+        let totalSentences = sentences.length;
+
+        // Shuffle the sentences to display them in random order
+        shuffleArray(sentences);
+
+        displaySentence();
+
+        function displaySentence() {
+            const sentenceObj = sentences[currentSentenceIndex];
+
+            // Display image
+            document.getElementById('sentence-image').src = sentenceObj.image;
+            document.getElementById('sentence-image').alt = 'Image representing the sentence';
+
+            // Reset areas
+            document.getElementById('scrambled-words').innerHTML = '';
+            document.getElementById('answer-area').innerHTML = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('check-button').classList.remove('hidden');
+            document.getElementById('check-button').disabled = false;
+
+            // Shuffle words
+            const scrambledWords = shuffleArray(sentenceObj.words.slice());
+
+            // Display scrambled words
+            scrambledWords.forEach((word) => {
+                const wordTile = document.createElement('div');
+                wordTile.classList.add('word-tile');
+                wordTile.textContent = word;
+                wordTile.draggable = true;
+                wordTile.addEventListener('dragstart', dragStart);
+                wordTile.addEventListener('dragend', dragEnd);
+                wordTile.addEventListener('click', wordTileClicked); // For mobile devices
+                document.getElementById('scrambled-words').appendChild(wordTile);
+            });
+
+            // Create empty slots in the answer area
+            const answerArea = document.getElementById('answer-area');
+            for (let i = 0; i < sentenceObj.words.length; i++) {
+                const slot = document.createElement('div');
+                slot.classList.add('empty-slot');
+                slot.dataset.index = i;
+                slot.addEventListener('dragover', dragOver);
+                slot.addEventListener('drop', dropWordInSlot);
+                slot.addEventListener('click', slotClicked); // For mobile devices
+                answerArea.appendChild(slot);
+            }
+
+            updateProgressBar();
+        }
+
+        let draggedElement = null;
+
+        function dragStart(event) {
+            draggedElement = event.target;
+            event.dataTransfer.setData('text/plain', event.target.textContent);
+            // For Firefox compatibility
+            event.dataTransfer.dropEffect = 'move';
+        }
+
+        function dragEnd(event) {
+            draggedElement = null;
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+            // For Firefox compatibility
+            event.dataTransfer.dropEffect = 'move';
+        }
+
+        function dropWordInSlot(event) {
+            event.preventDefault();
+            const slot = event.currentTarget;
+
+            // If slot already has a word, move it back to scrambled words
+            if (slot.firstChild) {
+                const existingWord = slot.firstChild;
+                existingWord.removeEventListener('dragstart', dragStart);
+                existingWord.removeEventListener('dragend', dragEnd);
+                existingWord.draggable = true;
+                existingWord.addEventListener('dragstart', dragStart);
+                existingWord.addEventListener('dragend', dragEnd);
+                existingWord.addEventListener('click', wordTileClicked); // For mobile devices
+                document.getElementById('scrambled-words').appendChild(existingWord);
+            }
+
+            // Move the dragged word into the slot
+            const wordTile = draggedElement;
+            wordTile.removeEventListener('dragstart', dragStart);
+            wordTile.removeEventListener('dragend', dragEnd);
             wordTile.draggable = true;
             wordTile.addEventListener('dragstart', dragStart);
-            wordTile.addEventListener('dragover', dragOver);
-            wordTile.addEventListener('drop', dropWord);
-            wordTile.addEventListener('touchstart', touchStart);
-            wordTile.addEventListener('touchmove', touchMove);
-            wordTile.addEventListener('touchend', touchEndAnswer);
-            wordTile.addEventListener('dblclick', removeWord);
-
-            // Remove the word from scrambled words
-            draggedElement.remove();
-        } else {
-            // If dragging within answer area
-            wordTile = draggedElement;
+            wordTile.addEventListener('dragend', dragEnd);
+            wordTile.addEventListener('click', wordTileClicked); // For mobile devices
+            slot.appendChild(wordTile);
         }
 
-        const answerArea = document.getElementById('answer-area');
-        if (event.target.classList.contains('word-tile') && event.target.parentElement.id === 'answer-area') {
-            // Insert before or after the target word tile based on position
-            const targetTile = event.target;
-            const draggedIndex = Array.from(answerArea.children).indexOf(wordTile);
-            const targetIndex = Array.from(answerArea.children).indexOf(targetTile);
+        function checkSentence() {
+            const sentenceObj = sentences[currentSentenceIndex];
+            const userSentence = Array.from(document.querySelectorAll('.empty-slot'))
+                .map(slot => slot.firstChild ? slot.firstChild.textContent : '');
+            const message = document.getElementById('message');
 
-            if (draggedIndex < targetIndex) {
-                answerArea.insertBefore(wordTile, targetTile.nextSibling);
+            if (arraysEqual(userSentence, sentenceObj.correctOrder)) {
+                score++;
+                message.textContent = 'Correct! Well done! 🎉';
+                message.style.color = 'green';
             } else {
-                answerArea.insertBefore(wordTile, targetTile);
+                message.textContent = `Oops! That's not quite right. Try again.`;
+                message.style.color = 'red';
+                return; // Allow the player to try again
             }
-        } else {
-            // Append to the end if dropped in empty area
-            answerArea.appendChild(wordTile);
+
+            document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('check-button').classList.add('hidden');
+            document.getElementById('next-button').classList.remove('hidden');
         }
-    }
-}
+
+        function nextSentence() {
+            currentSentenceIndex++;
+            if (currentSentenceIndex < totalSentences) {
+                displaySentence();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalSentences}</p>`;
+            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
+        }
+
+        function shuffleArray(array) {
+            // Simple Fisher-Yates shuffle
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function arraysEqual(a, b) {
+            return JSON.stringify(a) === JSON.stringify(b);
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = ((currentSentenceIndex) / totalSentences) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // For mobile devices: Tap to move words
+        let selectedWord = null;
+
+        function wordTileClicked(event) {
+            const wordTile = event.target;
+            selectedWord = wordTile;
+            // Highlight selected word
+            wordTile.style.backgroundColor = '#ffcc00';
+        }
+
+        function slotClicked(event) {
+            const slot = event.currentTarget;
+            if (selectedWord) {
+                // If slot already has a word, move it back to scrambled words
+                if (slot.firstChild) {
+                    const existingWord = slot.firstChild;
+                    existingWord.style.backgroundColor = '#c61190';
+                    existingWord.addEventListener('click', wordTileClicked);
+                    document.getElementById('scrambled-words').appendChild(existingWord);
+                }
+                // Move the selected word to the slot
+                selectedWord.style.backgroundColor = '#c61190';
+                selectedWord.removeEventListener('click', wordTileClicked);
+                slot.appendChild(selectedWord);
+                selectedWord = null;
+            } else if (slot.firstChild) {
+                // If no word is selected and the slot has a word, select it
+                selectedWord = slot.firstChild;
+                selectedWord.style.backgroundColor = '#ffcc00';
+            }
+        }
+    </script>
+</body>
+</html>

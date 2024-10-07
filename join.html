@@ -117,23 +117,19 @@
         let sentences = [
             {
                 image: 'https://img.freepik.com/premium-photo/cartoon-tree-with-happy-face_889779-1034.jpg',
-                words: ['The', 'tree', 'is', 'tall'],
-                correctOrder: ['The', 'tree', 'is', 'tall']
+                words: ['The', 'tree', 'is', 'tall']
             },
             {
                 image: 'https://www.shutterstock.com/image-vector/happy-cute-kid-girl-riding-600nw-1555682591.jpg',
-                words: ['rides', 'bike', 'The', 'girl', 'the'],
-                correctOrder: ['The', 'girl', 'rides', 'the', 'bike']
+                words: ['The', 'girl', 'rides', 'the', 'bike']
             },
             {
                 image: 'https://png.pngtree.com/png-vector/20240316/ourlarge/pngtree-cartoon-dripping-faucet-png-image_11977886.png',
-                words: ['is', 'on', 'The', 'tap'],
-                correctOrder: ['The', 'tap', 'is', 'on']
+                words: ['The', 'tap', 'is', 'on']
             },
             {
-                image: 'https://i.pinimg.com/550x/da/4e/a9/da4ea9d88afb7a7fbbdde3b9f1fadc72.jpgg',
-                words: ['goes', 'the', 'Indie', 'to', 'beach'],
-                correctOrder: ['Indie', 'goes', 'to', 'the', 'beach']
+                image: 'https://png.pngtree.com/png-vector/20240316/ourlarge/pngtree-cartoon-dripping-faucet-png-image_11977886.png',
+                words: ['Indie', 'goes', 'to', 'the', 'beach']
             },
             // Add more sentences as desired
         ];
@@ -152,6 +148,9 @@
 
         function displaySentence() {
             const sentenceObj = sentences[currentSentenceIndex];
+
+            // Use the provided words array as the correct order
+            sentenceObj.correctOrder = [...sentenceObj.words];
 
             // Display image
             document.getElementById('sentence-image').src = sentenceObj.image;

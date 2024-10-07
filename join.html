@@ -178,20 +178,22 @@ function displaySentence() {
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', word);
         });
+        wordTile.addEventListener('dragend', (e) => {
+            draggedElement = null;
+        });
         wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
+        addTouchEventsToWordTile(wordTile); // Add touch events for mobile devices
         document.getElementById('scrambled-words').appendChild(wordTile);
     });
 
-// Create empty slots in the answer area
-const answerArea = document.getElementById('answer-area');
+    // Create empty slots in the answer area
+    const answerArea = document.getElementById('answer-area');
     for (let i = 0; i < sentenceObj.words.length; i++) {
         const slot = document.createElement('div');
         slot.classList.add('empty-slot');
         slot.dataset.index = i;
         slot.addEventListener('dragover', dragOver);
         slot.addEventListener('drop', dropWordInSlot);
-        // Remove the slotClick event listener
-        // slot.addEventListener('click', slotClick);
         answerArea.appendChild(slot);
     }
 
@@ -216,8 +218,6 @@ function wordTileClick(event) {
     }
 }
 
-
-
 // Shuffle function
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -237,12 +237,61 @@ function dropWordInSlot(event) {
     const slot = event.currentTarget;
 
     if (draggedElement) {
-        if (slot.firstChild) {
+        if (draggedElement.parentElement && draggedElement.parentElement.classList.contains('empty-slot')) {
+            draggedElement.parentElement.appendChild(slot.firstChild);
+        } else if (slot.firstChild) {
             document.getElementById('scrambled-words').appendChild(slot.firstChild);
         }
         slot.appendChild(draggedElement);
         draggedElement = null;
     }
+}
+
+// Function to check the sentence
+function checkSentence() {
+    const sentenceObj = sentences[currentSentenceIndex];
+    const answerWords = Array.from(document.querySelectorAll('.empty-slot')).map(slot => slot.firstChild ? slot.firstChild.textContent : '');
+
+    // Compare answerWords with sentenceObj.correctOrder
+    const isCorrect = answerWords.join(' ') === sentenceObj.correctOrder.join(' ');
+
+    const messageElement = document.getElementById('message');
+    if (isCorrect) {
+        messageElement.textContent = 'Correct!';
+        score++;
+        document.getElementById('score').textContent = `Score: ${score}`;
+    } else {
+        messageElement.textContent = 'Try Again!';
+    }
+
+    // Disable check button if the answer is correct
+    if (isCorrect) {
+        document.getElementById('check-button').disabled = true;
+        document.getElementById('next-button').classList.remove('hidden');
+    }
+}
+
+// Function to proceed to the next sentence
+function nextSentence() {
+    currentSentenceIndex++;
+    if (currentSentenceIndex < sentences.length) {
+        displaySentence();
+    } else {
+        // Game over
+        alert(`Game over! Your final score is ${score}/${sentences.length}`);
+        // Reset game or do something else
+        currentSentenceIndex = 0;
+        score = 0;
+        shuffleArray(sentences);
+        displaySentence();
+    }
+}
+
+// Function to update the progress bar
+function updateProgressBar() {
+    const progressBar = document.getElementById('progress-bar');
+    const progressPercentage = ((currentSentenceIndex) / totalSentences) * 100;
+    progressBar.style.width = `${progressPercentage}%`;
 }
 
 // Ensure dragged element resets on touch end

@@ -182,15 +182,16 @@ function displaySentence() {
         document.getElementById('scrambled-words').appendChild(wordTile);
     });
 
-    // Create empty slots in the answer area
-    const answerArea = document.getElementById('answer-area');
+// Create empty slots in the answer area
+const answerArea = document.getElementById('answer-area');
     for (let i = 0; i < sentenceObj.words.length; i++) {
         const slot = document.createElement('div');
         slot.classList.add('empty-slot');
         slot.dataset.index = i;
         slot.addEventListener('dragover', dragOver);
         slot.addEventListener('drop', dropWordInSlot);
-        slot.addEventListener('click', slotClick); // Handle click to move word back up
+        // Remove the slotClick event listener
+        // slot.addEventListener('click', slotClick);
         answerArea.appendChild(slot);
     }
 
@@ -200,20 +201,22 @@ function displaySentence() {
 // Function to handle tapping on a word tile
 function wordTileClick(event) {
     const wordTile = event.target;
-    const emptySlot = Array.from(document.querySelectorAll('.empty-slot')).find(slot => !slot.firstChild);
-    if (emptySlot) {
-        emptySlot.appendChild(wordTile);
-    }
-}
+    const parent = wordTile.parentElement;
 
-// Function to handle tapping on an empty slot to remove the word
-function slotClick(event) {
-    const slot = event.currentTarget;
-    if (slot.firstChild) {
-        const wordTile = slot.firstChild;
+    // If the wordTile is in the scrambled-words area
+    if (parent && parent.id === 'scrambled-words') {
+        const emptySlot = Array.from(document.querySelectorAll('.empty-slot')).find(slot => !slot.firstChild);
+        if (emptySlot) {
+            emptySlot.appendChild(wordTile);
+        }
+    }
+    // If the wordTile is in a slot, move it back to scrambled-words
+    else if (parent && parent.classList.contains('empty-slot')) {
         document.getElementById('scrambled-words').appendChild(wordTile);
     }
 }
+
+
 
 // Shuffle function
 function shuffleArray(array) {

@@ -175,6 +175,7 @@ function displaySentence() {
         wordTile.draggable = true;
         wordTile.addEventListener('dragstart', (e) => {
             draggedElement = wordTile;
+            e.dataTransfer.setData('text/plain', word);
             e.dataTransfer.effectAllowed = 'move';
         });
         wordTile.addEventListener('touchstart', touchStart, { passive: false });
@@ -224,6 +225,24 @@ function shuffleArray(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+}
+
+let draggedElement = null;
+function dragOver(event) {
+    event.preventDefault();
+}
+
+function dropWordInSlot(event) {
+    event.preventDefault();
+    const slot = event.currentTarget;
+
+    if (draggedElement) {
+        if (slot.firstChild) {
+            document.getElementById('scrambled-words').appendChild(slot.firstChild);
+        }
+        slot.appendChild(draggedElement);
+        draggedElement = null;
+    }
 }
 </script>
 </body>

@@ -171,7 +171,6 @@
                 wordTile.draggable = true;
                 wordTile.addEventListener('dragstart', dragStart);
                 wordTile.addEventListener('dragend', dragEnd);
-                wordTile.addEventListener('click', wordTileClicked); // For mobile devices
                 document.getElementById('scrambled-words').appendChild(wordTile);
             });
 
@@ -183,7 +182,6 @@
                 slot.dataset.index = i;
                 slot.addEventListener('dragover', dragOver);
                 slot.addEventListener('drop', dropWordInSlot);
-                slot.addEventListener('click', slotClicked); // For mobile devices
                 answerArea.appendChild(slot);
             }
 
@@ -196,7 +194,7 @@
             draggedElement = event.target;
             event.dataTransfer.setData('text/plain', event.target.textContent);
             // For Firefox compatibility
-            event.dataTransfer.dropEffect = 'move';
+            event.dataTransfer.effectAllowed = 'move';
         }
 
         function dragEnd(event) {
@@ -218,22 +216,13 @@
                 const existingWord = slot.firstChild;
                 existingWord.removeEventListener('dragstart', dragStart);
                 existingWord.removeEventListener('dragend', dragEnd);
-                existingWord.draggable = true;
-                existingWord.addEventListener('dragstart', dragStart);
-                existingWord.addEventListener('dragend', dragEnd);
-                existingWord.addEventListener('click', wordTileClicked); // For mobile devices
                 document.getElementById('scrambled-words').appendChild(existingWord);
             }
 
             // Move the dragged word into the slot
-            const wordTile = draggedElement;
-            wordTile.removeEventListener('dragstart', dragStart);
-            wordTile.removeEventListener('dragend', dragEnd);
-            wordTile.draggable = true;
-            wordTile.addEventListener('dragstart', dragStart);
-            wordTile.addEventListener('dragend', dragEnd);
-            wordTile.addEventListener('click', wordTileClicked); // For mobile devices
-            slot.appendChild(wordTile);
+            if (draggedElement) {
+                slot.appendChild(draggedElement);
+            }
         }
 
         function checkSentence() {
@@ -289,38 +278,6 @@
             const progressBar = document.getElementById('progress-bar');
             const progress = ((currentSentenceIndex + 1) / totalSentences) * 100;
             progressBar.style.width = `${progress}%`;
-        }
-
-        // For mobile devices: Tap to move words
-        let selectedWord = null;
-
-        function wordTileClicked(event) {
-            const wordTile = event.target;
-            selectedWord = wordTile;
-            // Highlight selected word
-            wordTile.style.backgroundColor = '#ffcc00';
-        }
-
-        function slotClicked(event) {
-            const slot = event.currentTarget;
-            if (selectedWord) {
-                // If slot already has a word, move it back to scrambled words
-                if (slot.firstChild) {
-                    const existingWord = slot.firstChild;
-                    existingWord.style.backgroundColor = '#c61190';
-                    existingWord.addEventListener('click', wordTileClicked);
-                    document.getElementById('scrambled-words').appendChild(existingWord);
-                }
-                // Move the selected word to the slot
-                selectedWord.style.backgroundColor = '#c61190';
-                selectedWord.removeEventListener('click', wordTileClicked);
-                slot.appendChild(selectedWord);
-                selectedWord = null;
-            } else if (slot.firstChild) {
-                // If no word is selected and the slot has a word, select it
-                selectedWord = slot.firstChild;
-                selectedWord.style.backgroundColor = '#ffcc00';
-            }
         }
     </script>
 </body>

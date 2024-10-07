@@ -176,6 +176,7 @@
                 wordTile.addEventListener('touchstart', touchStart, { passive: false });
                 wordTile.addEventListener('touchmove', touchMove, { passive: false });
                 wordTile.addEventListener('touchend', touchEnd);
+                wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
                 document.getElementById('scrambled-words').appendChild(wordTile);
             });
 
@@ -187,6 +188,7 @@
                 slot.dataset.index = i;
                 slot.addEventListener('dragover', dragOver);
                 slot.addEventListener('drop', dropWordInSlot);
+                slot.addEventListener('click', slotClick); // Handle click to move word back up
                 answerArea.appendChild(slot);
             }
 
@@ -250,8 +252,6 @@
             // If slot already has a word, move it back to scrambled words
             if (slot.firstChild) {
                 const existingWord = slot.firstChild;
-                existingWord.removeEventListener('dragstart', dragStart);
-                existingWord.removeEventListener('dragend', dragEnd);
                 document.getElementById('scrambled-words').appendChild(existingWord);
             }
 
@@ -263,6 +263,22 @@
                 draggedElement.style.left = 'auto';
                 draggedElement.style.top = 'auto';
                 draggedElement = null;
+            }
+        }
+
+        function wordTileClick(event) {
+            const wordTile = event.target;
+            const emptySlot = Array.from(document.querySelectorAll('.empty-slot')).find(slot => !slot.firstChild);
+            if (emptySlot) {
+                emptySlot.appendChild(wordTile);
+            }
+        }
+
+        function slotClick(event) {
+            const slot = event.currentTarget;
+            if (slot.firstChild) {
+                const wordTile = slot.firstChild;
+                document.getElementById('scrambled-words').appendChild(wordTile);
             }
         }
 

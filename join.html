@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -242,50 +242,29 @@ function dropWordInSlot(event) {
     }
 }
 
-function checkSentence() {
-    const sentenceObj = sentences[currentSentenceIndex];
-    const userSentence = Array.from(document.querySelectorAll('.empty-slot'))
-        .map(slot => slot.firstChild ? slot.firstChild.textContent : '');
-    const message = document.getElementById('message');
-
-    if (arraysEqual(userSentence, sentenceObj.correctOrder)) {
-        score++;
-        message.textContent = 'Correct! Well done! 🎉';
-        message.style.color = 'green';
-    } else {
-        message.textContent = `Oops! That's not quite right. Try again.`;
-        message.style.color = 'red';
-        return; // Allow the player to try again
-    }
-
-    document.getElementById('score').textContent = `Score: ${score}`;
-    document.getElementById('check-button').classList.add('hidden');
-    document.getElementById('next-button').classList.remove('hidden');
-}
-
-function nextSentence() {
-    currentSentenceIndex++;
-    if (currentSentenceIndex < totalSentences) {
-        displaySentence();
-    } else {
-        endGame();
+// Ensure dragged element resets on touch end
+function touchEnd(event) {
+    if (draggedElement) {
+        draggedElement.style.position = 'static';
+        draggedElement.style.zIndex = 'auto';
+        draggedElement = null;
     }
 }
 
-function endGame() {
-    const gameContainer = document.getElementById('game-container');
-    gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalSentences}</p>`;
-    gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
-}
-
-function arraysEqual(a, b) {
-    return JSON.stringify(a) === JSON.stringify(b);
-}
-
-function updateProgressBar() {
-    const progressBar = document.getElementById('progress-bar');
-    const progress = ((currentSentenceIndex + 1) / totalSentences) * 100;
-    progressBar.style.width = `${progress}%`;
+// Attach touch events for drag-and-drop compatibility
+function addTouchEventsToWordTile(wordTile) {
+    wordTile.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        draggedElement = wordTile;
+    }, { passive: false });
+    wordTile.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        wordTile.style.position = 'fixed';
+        wordTile.style.left = `${touch.clientX - wordTile.offsetWidth / 2}px`;
+        wordTile.style.top = `${touch.clientY - wordTile.offsetHeight / 2}px`;
+    }, { passive: false });
+    wordTile.addEventListener('touchend', touchEnd);
 }
 </script>
 </body>

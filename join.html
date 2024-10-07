@@ -33,7 +33,7 @@
     background-color: #c61190;
     color: white;
     border-radius: 5px;
-    cursor: pointer; /* Changed from 'grab' to 'pointer' */
+    cursor: pointer;
     user-select: none;
 }
 .empty-slot {
@@ -83,6 +83,23 @@
     width: 0%;
     height: 100%;
     background-color: #c61190;
+}
+/* Styles for the end game summary */
+#summary-container {
+    margin-top: 20px;
+}
+#summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+#summary-table th, #summary-table td {
+    border: 1px solid #c61190;
+    padding: 8px;
+    text-align: left;
+}
+#summary-table th {
+    background-color: #c61190;
+    color: white;
 }
 </style>
 </head>
@@ -161,9 +178,11 @@ function displaySentence() {
     document.getElementById('scrambled-words').innerHTML = '';
     document.getElementById('answer-area').innerHTML = '';
     document.getElementById('message').textContent = '';
+    document.getElementById('message').style.color = 'green'; // Reset message color
     document.getElementById('next-button').classList.add('hidden');
     document.getElementById('check-button').classList.remove('hidden');
     document.getElementById('check-button').disabled = false;
+    document.getElementById('check-button').classList.remove('hidden');
 
     // Shuffle words
     const scrambledWords = shuffleArray(sentenceObj.words.slice());
@@ -232,11 +251,13 @@ function checkSentence() {
 
     const messageElement = document.getElementById('message');
     if (isCorrect) {
-        messageElement.textContent = 'Correct!';
+        messageElement.textContent = 'Correct! Well done! ✔️';
+        messageElement.style.color = 'green';
         score++;
         document.getElementById('score').textContent = `Score: ${score}`;
     } else {
-        messageElement.textContent = 'Incorrect!';
+        messageElement.textContent = 'Incorrect! 🙁';
+        messageElement.style.color = 'red';
         // Store the incorrect sentence
         incorrectSentences.push({
             image: sentenceObj.image,
@@ -245,8 +266,9 @@ function checkSentence() {
         });
     }
 
-    // Disable check button after first attempt
+    // Disable and hide check button after first attempt
     document.getElementById('check-button').disabled = true;
+    document.getElementById('check-button').classList.add('hidden');
     document.getElementById('next-button').classList.remove('hidden');
 }
 
@@ -256,27 +278,43 @@ function nextSentence() {
     if (currentSentenceIndex < sentences.length) {
         displaySentence();
     } else {
-        // Game over
-        // Display the sentences the user got wrong
-        let resultMessage = `Game over! Your final score is ${score}/${sentences.length}.\n`;
-        if (incorrectSentences.length > 0) {
-            resultMessage += `\nYou got the following sentences wrong:\n`;
-            incorrectSentences.forEach((item, index) => {
-                resultMessage += `\nSentence ${index + 1}:\n`;
-                resultMessage += `Correct Sentence: ${item.correctSentence}\n`;
-                resultMessage += `Your Answer: ${item.yourAnswer}\n`;
-            });
-        } else {
-            resultMessage += `\nGreat job! You got all sentences correct!`;
-        }
-        alert(resultMessage);
-        // Reset game
-        currentSentenceIndex = 0;
-        score = 0;
-        incorrectSentences = [];
-        shuffleArray(sentences);
-        displaySentence();
+        endGame();
     }
+}
+
+// Function to end the game and display results
+function endGame() {
+    // Display the sentences the user got wrong
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalSentences}</p>`;
+
+    if (incorrectSentences.length > 0) {
+        // Create a table to display incorrect answers
+        let resultHTML = `
+            <h2>Review Your Incorrect Sentences:</h2>
+            <table id="summary-table">
+                <tr>
+                    <th>Image</th>
+                    <th>Correct Sentence</th>
+                    <th>Your Answer</th>
+                </tr>
+        `;
+        incorrectSentences.forEach(item => {
+            resultHTML += `
+                <tr>
+                    <td><img src="${item.image}" alt="Sentence Image" width="100"></td>
+                    <td>${item.correctSentence}</td>
+                    <td>${item.yourAnswer || '(No answer)'}</td>
+                </tr>
+            `;
+        });
+        resultHTML += `</table>`;
+        gameContainer.innerHTML += resultHTML;
+    } else {
+        gameContainer.innerHTML += `<p>Excellent work! You got all sentences correct! 🎉</p>`;
+    }
+
+    gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
 }
 
 // Function to update the progress bar

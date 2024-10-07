@@ -178,9 +178,23 @@ function displaySentence() {
             e.dataTransfer.setData('text/plain', word);
             e.dataTransfer.effectAllowed = 'move';
         });
-        wordTile.addEventListener('touchstart', touchStart, { passive: false });
-        wordTile.addEventListener('touchmove', touchMove, { passive: false });
-        wordTile.addEventListener('touchend', touchEnd);
+        wordTile.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            draggedElement = wordTile;
+        }, { passive: false });
+        wordTile.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            wordTile.style.position = 'fixed';
+            wordTile.style.left = `${touch.clientX - wordTile.offsetWidth / 2}px`;
+            wordTile.style.top = `${touch.clientY - wordTile.offsetHeight / 2}px`;
+        }, { passive: false });
+        wordTile.addEventListener('touchend', () => {
+            wordTile.style.position = 'static';
+            wordTile.style.left = 'auto';
+            wordTile.style.top = 'auto';
+            draggedElement = null;
+        });
         wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
         document.getElementById('scrambled-words').appendChild(wordTile);
     });

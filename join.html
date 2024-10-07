@@ -33,7 +33,7 @@
             background-color: #c61190;
             color: white;
             border-radius: 5px;
-            cursor: move;
+            cursor: grab;
             user-select: none;
         }
         .empty-slot {
@@ -169,8 +169,9 @@
                 wordTile.classList.add('word-tile');
                 wordTile.textContent = word;
                 wordTile.draggable = true;
-                wordTile.addEventListener('dragstart', dragStart);
-                wordTile.addEventListener('dragend', dragEnd);
+                wordTile.addEventListener('touchstart', touchStart, { passive: false });
+                wordTile.addEventListener('touchmove', touchMove, { passive: false });
+                wordTile.addEventListener('touchend', touchEnd);
                 document.getElementById('scrambled-words').appendChild(wordTile);
             });
 
@@ -189,16 +190,45 @@
         }
 
         let draggedElement = null;
+        let touchOffset = { x: 0, y: 0 };
 
-        function dragStart(event) {
+        function touchStart(event) {
+            event.preventDefault();
             draggedElement = event.target;
-            event.dataTransfer.setData('text/plain', event.target.textContent);
-            // For Firefox compatibility
-            event.dataTransfer.effectAllowed = 'move';
+            const touch = event.touches[0];
+            touchOffset.x = touch.clientX - draggedElement.getBoundingClientRect().left;
+            touchOffset.y = touch.clientY - draggedElement.getBoundingClientRect().top;
+            draggedElement.style.position = 'absolute';
+            draggedElement.style.zIndex = 1000;
         }
 
-        function dragEnd(event) {
-            draggedElement = null;
+        function touchMove(event) {
+            event.preventDefault();
+            if (draggedElement) {
+                const touch = event.touches[0];
+                draggedElement.style.left = touch.clientX - touchOffset.x + 'px';
+                draggedElement.style.top = touch.clientY - touchOffset.y + 'px';
+            }
+        }
+
+        function touchEnd(event) {
+            if (draggedElement) {
+                const elementsAtPoint = document.elementsFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+                const dropTarget = elementsAtPoint.find(el => el.classList.contains('empty-slot'));
+                if (dropTarget) {
+                    dropTarget.appendChild(draggedElement);
+                    draggedElement.style.position = 'static';
+                    draggedElement.style.zIndex = 'auto';
+                    draggedElement.style.left = 'auto';
+                    draggedElement.style.top = 'auto';
+                } else {
+                    draggedElement.style.position = 'static';
+                    draggedElement.style.zIndex = 'auto';
+                    draggedElement.style.left = 'auto';
+                    draggedElement.style.top = 'auto';
+                }
+                draggedElement = null;
+            }
         }
 
         function dragOver(event) {
@@ -222,6 +252,11 @@
             // Move the dragged word into the slot
             if (draggedElement) {
                 slot.appendChild(draggedElement);
+                draggedElement.style.position = 'static';
+                draggedElement.style.zIndex = 'auto';
+                draggedElement.style.left = 'auto';
+                draggedElement.style.top = 'auto';
+                draggedElement = null;
             }
         }
 

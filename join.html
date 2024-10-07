@@ -128,7 +128,7 @@ let sentences = [
         words: ['The', 'tap', 'is', 'on']
     },
     {
-        image: 'https://png.pngtree.com/png-vector/20240316/ourlarge/pngtree-cartoon-dripping-faucet-png-image_11977886.png',
+        image: 'https://img.freepik.com/premium-photo/cartoon-beach-scene_889779-1056.jpg',
         words: ['Indie', 'goes', 'to', 'the', 'beach']
     },
     // Add more sentences as desired
@@ -173,8 +173,9 @@ function displaySentence() {
         wordTile.classList.add('word-tile');
         wordTile.textContent = word;
         wordTile.draggable = true;
-        wordTile.addEventListener('dragstart', () => {
+        wordTile.addEventListener('dragstart', (e) => {
             draggedElement = wordTile;
+            e.dataTransfer.effectAllowed = 'move';
         });
         wordTile.addEventListener('touchstart', touchStart, { passive: false });
         wordTile.addEventListener('touchmove', touchMove, { passive: false });
@@ -214,6 +215,15 @@ function slotClick(event) {
         const wordTile = slot.firstChild;
         document.getElementById('scrambled-words').appendChild(wordTile);
     }
+}
+
+// Shuffle function
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 </script>
 </body>

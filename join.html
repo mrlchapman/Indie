@@ -196,10 +196,12 @@
             event.preventDefault();
             draggedElement = event.target;
             const touch = event.touches[0];
-            touchOffset.x = touch.clientX - draggedElement.getBoundingClientRect().left;
-            touchOffset.y = touch.clientY - draggedElement.getBoundingClientRect().top;
-            draggedElement.style.position = 'absolute';
+            touchOffset.x = touch.clientX - draggedElement.getBoundingClientRect().width / 2;
+            touchOffset.y = touch.clientY - draggedElement.getBoundingClientRect().height / 2;
+            draggedElement.style.position = 'fixed';
             draggedElement.style.zIndex = 1000;
+            draggedElement.style.left = touch.clientX - touchOffset.x + 'px';
+            draggedElement.style.top = touch.clientY - touchOffset.y + 'px';
         }
 
         function touchMove(event) {

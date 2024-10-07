@@ -168,21 +168,18 @@ function displaySentence() {
     const scrambledWords = shuffleArray(sentenceObj.words.slice());
 
     // Display scrambled words
+    let wordTileCounter = 0; // Ensure unique ids
     scrambledWords.forEach((word) => {
         const wordTile = document.createElement('div');
         wordTile.classList.add('word-tile');
         wordTile.textContent = word;
         wordTile.draggable = true;
+        wordTile.id = 'word-tile-' + wordTileCounter++;
         wordTile.addEventListener('dragstart', (e) => {
-            draggedElement = wordTile;
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', word);
-        });
-        wordTile.addEventListener('dragend', (e) => {
-            draggedElement = null;
+            e.dataTransfer.setData('text/plain', wordTile.id);
         });
         wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
-        addTouchEventsToWordTile(wordTile); // Add touch events for mobile devices
         document.getElementById('scrambled-words').appendChild(wordTile);
     });
 
@@ -227,23 +224,33 @@ function shuffleArray(array) {
     return array;
 }
 
-let draggedElement = null;
 function dragOver(event) {
     event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
 }
 
 function dropWordInSlot(event) {
     event.preventDefault();
     const slot = event.currentTarget;
 
-    if (draggedElement) {
-        if (draggedElement.parentElement && draggedElement.parentElement.classList.contains('empty-slot')) {
-            draggedElement.parentElement.appendChild(slot.firstChild);
-        } else if (slot.firstChild) {
+    const wordTileId = event.dataTransfer.getData('text/plain');
+    const wordTile = document.getElementById(wordTileId);
+
+    if (wordTile) {
+        const wordTileParent = wordTile.parentElement;
+
+        // If the slot already has a child, move it back to the scrambled words
+        if (slot.firstChild) {
             document.getElementById('scrambled-words').appendChild(slot.firstChild);
         }
-        slot.appendChild(draggedElement);
-        draggedElement = null;
+
+        // If the word tile came from another slot, empty that slot
+        if (wordTileParent && wordTileParent.classList.contains('empty-slot')) {
+            wordTileParent.innerHTML = '';
+        }
+
+        // Append the word tile to the slot
+        slot.appendChild(wordTile);
     }
 }
 
@@ -292,31 +299,6 @@ function updateProgressBar() {
     const progressBar = document.getElementById('progress-bar');
     const progressPercentage = ((currentSentenceIndex) / totalSentences) * 100;
     progressBar.style.width = `${progressPercentage}%`;
-}
-
-// Ensure dragged element resets on touch end
-function touchEnd(event) {
-    if (draggedElement) {
-        draggedElement.style.position = 'static';
-        draggedElement.style.zIndex = 'auto';
-        draggedElement = null;
-    }
-}
-
-// Attach touch events for drag-and-drop compatibility
-function addTouchEventsToWordTile(wordTile) {
-    wordTile.addEventListener('touchstart', function (e) {
-        e.preventDefault();
-        draggedElement = wordTile;
-    }, { passive: false });
-    wordTile.addEventListener('touchmove', function (e) {
-        e.preventDefault();
-        const touch = e.touches[0];
-        wordTile.style.position = 'fixed';
-        wordTile.style.left = `${touch.clientX - wordTile.offsetWidth / 2}px`;
-        wordTile.style.top = `${touch.clientY - wordTile.offsetHeight / 2}px`;
-    }, { passive: false });
-    wordTile.addEventListener('touchend', touchEnd);
 }
 </script>
 </body>

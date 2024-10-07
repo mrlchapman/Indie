@@ -33,7 +33,7 @@
     background-color: #c61190;
     color: white;
     border-radius: 5px;
-    cursor: grab;
+    cursor: pointer; /* Changed from 'grab' to 'pointer' */
     user-select: none;
 }
 .empty-slot {
@@ -140,6 +140,7 @@ let sentences = [
 let currentSentenceIndex = 0;
 let score = 0;
 let totalSentences = sentences.length;
+let incorrectSentences = []; // To store incorrect sentences
 
 // Shuffle the sentences to display them in random order
 shuffleArray(sentences);
@@ -168,17 +169,10 @@ function displaySentence() {
     const scrambledWords = shuffleArray(sentenceObj.words.slice());
 
     // Display scrambled words
-    let wordTileCounter = 0; // Ensure unique ids
     scrambledWords.forEach((word) => {
         const wordTile = document.createElement('div');
         wordTile.classList.add('word-tile');
         wordTile.textContent = word;
-        wordTile.draggable = true;
-        wordTile.id = 'word-tile-' + wordTileCounter++;
-        wordTile.addEventListener('dragstart', (e) => {
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', wordTile.id);
-        });
         wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
         document.getElementById('scrambled-words').appendChild(wordTile);
     });
@@ -189,8 +183,7 @@ function displaySentence() {
         const slot = document.createElement('div');
         slot.classList.add('empty-slot');
         slot.dataset.index = i;
-        slot.addEventListener('dragover', dragOver);
-        slot.addEventListener('drop', dropWordInSlot);
+        slot.addEventListener('click', slotClick); // Handle click to move word back up
         answerArea.appendChild(slot);
     }
 
@@ -209,8 +202,13 @@ function wordTileClick(event) {
             emptySlot.appendChild(wordTile);
         }
     }
-    // If the wordTile is in a slot, move it back to scrambled-words
-    else if (parent && parent.classList.contains('empty-slot')) {
+}
+
+// Function to handle tapping on an empty slot to remove the word
+function slotClick(event) {
+    const slot = event.currentTarget;
+    if (slot.firstChild) {
+        const wordTile = slot.firstChild;
         document.getElementById('scrambled-words').appendChild(wordTile);
     }
 }
@@ -222,36 +220,6 @@ function shuffleArray(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
-}
-
-function dragOver(event) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-}
-
-function dropWordInSlot(event) {
-    event.preventDefault();
-    const slot = event.currentTarget;
-
-    const wordTileId = event.dataTransfer.getData('text/plain');
-    const wordTile = document.getElementById(wordTileId);
-
-    if (wordTile) {
-        const wordTileParent = wordTile.parentElement;
-
-        // If the slot already has a child, move it back to the scrambled words
-        if (slot.firstChild) {
-            document.getElementById('scrambled-words').appendChild(slot.firstChild);
-        }
-
-        // If the word tile came from another slot, empty that slot
-        if (wordTileParent && wordTileParent.classList.contains('empty-slot')) {
-            wordTileParent.innerHTML = '';
-        }
-
-        // Append the word tile to the slot
-        slot.appendChild(wordTile);
-    }
 }
 
 // Function to check the sentence
@@ -268,14 +236,18 @@ function checkSentence() {
         score++;
         document.getElementById('score').textContent = `Score: ${score}`;
     } else {
-        messageElement.textContent = 'Try Again!';
+        messageElement.textContent = 'Incorrect!';
+        // Store the incorrect sentence
+        incorrectSentences.push({
+            image: sentenceObj.image,
+            correctSentence: sentenceObj.correctOrder.join(' '),
+            yourAnswer: answerWords.join(' ')
+        });
     }
 
-    // Disable check button if the answer is correct
-    if (isCorrect) {
-        document.getElementById('check-button').disabled = true;
-        document.getElementById('next-button').classList.remove('hidden');
-    }
+    // Disable check button after first attempt
+    document.getElementById('check-button').disabled = true;
+    document.getElementById('next-button').classList.remove('hidden');
 }
 
 // Function to proceed to the next sentence
@@ -285,10 +257,23 @@ function nextSentence() {
         displaySentence();
     } else {
         // Game over
-        alert(`Game over! Your final score is ${score}/${sentences.length}`);
-        // Reset game or do something else
+        // Display the sentences the user got wrong
+        let resultMessage = `Game over! Your final score is ${score}/${sentences.length}.\n`;
+        if (incorrectSentences.length > 0) {
+            resultMessage += `\nYou got the following sentences wrong:\n`;
+            incorrectSentences.forEach((item, index) => {
+                resultMessage += `\nSentence ${index + 1}:\n`;
+                resultMessage += `Correct Sentence: ${item.correctSentence}\n`;
+                resultMessage += `Your Answer: ${item.yourAnswer}\n`;
+            });
+        } else {
+            resultMessage += `\nGreat job! You got all sentences correct!`;
+        }
+        alert(resultMessage);
+        // Reset game
         currentSentenceIndex = 0;
         score = 0;
+        incorrectSentences = [];
         shuffleArray(sentences);
         displaySentence();
     }

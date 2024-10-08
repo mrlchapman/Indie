@@ -301,14 +301,8 @@
             document.getElementById('score').textContent = `Your final score is: ${score} out of ${shuffledQuestions.length}`;
             document.getElementById('next-button').classList.add('hidden');
 
-            // Create and show Play Again button
-            let playAgainButton = document.createElement('button');
-            playAgainButton.id = 'play-again-button';
-            playAgainButton.textContent = 'Play Again';
-            playAgainButton.style = 'padding: 10px 20px; font-size: 18px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer;';
-            playAgainButton.onclick = initGame;
-
-            gameContainer.appendChild(playAgainButton);
+            // Create and show Play Again button using location.reload to fully reset
+            gameContainer.innerHTML += `<button onclick="location.reload()" style="padding: 10px 20px; font-size: 18px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer;">Play Again</button>`;
         }
 
         // Start the Game on Page Load

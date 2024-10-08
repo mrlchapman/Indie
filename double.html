@@ -13,10 +13,30 @@
             background-color: #f0f8ff;
             text-align: center;
             padding: 20px;
+            margin: 0;
         }
+        /* Back to Games Button Styling */
+        #back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #c61190;
+            font-size: 18px;
+            background-color: #fff;
+            padding: 5px 10px;
+            border: 2px solid #c61190;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        #back-button:hover {
+            background-color: #c61190;
+            color: #fff;
+        }
+
         #game-container {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 80px auto 0 auto; /* Adjusted margin-top to prevent overlap with back button */
             background-color: #fff;
             border: 2px solid #c61190;
             border-radius: 10px;
@@ -25,6 +45,7 @@
         }
         h1 {
             color: #c61190;
+            margin-top: 0;
         }
         #progress-container {
             width: 100%;
@@ -54,17 +75,6 @@
             object-fit: contain;
             margin-bottom: 20px;
         }
-        #answers {
-            margin-bottom: 20px;
-        }
-        .blank-input {
-            width: 60px;
-            padding: 5px;
-            font-size: 18px;
-            text-align: center;
-            border: 2px solid #c61190;
-            border-radius: 5px;
-        }
         #buttons {
             margin-bottom: 20px;
         }
@@ -86,6 +96,10 @@
         .button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
+        }
+        #check-button.hidden,
+        #next-button.hidden {
+            display: none;
         }
         #feedback {
             font-size: 18px;
@@ -130,11 +144,20 @@
                 margin: 5px 0;
             }
         }
+        /* Styling the input field */
+        .blank-input {
+            width: 60px;
+            padding: 5px;
+            font-size: 18px;
+            text-align: center;
+            border: 2px solid #c61190;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <!-- Back to Games Button -->
-    <a id="back-button" href="https://mrlchapman.github.io/Indie/" style="text-decoration: none; color: #c61190; font-size: 18px;">← Back to Games</a>
+    <a id="back-button" href="https://mrlchapman.github.io/Indie/">← Back to Games</a>
 
     <div id="game-container">
         <h1>Doubles Game</h1>
@@ -236,7 +259,7 @@
                 // Disable input and Check button
                 input.disabled = true;
                 document.getElementById('check-button').classList.add('hidden');
-                // Show animated tick and Next button after a short delay
+                // Show animated tick and Next button
                 showTick();
             } else {
                 // Incorrect Answer

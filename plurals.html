@@ -1,328 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Indie's Sentence Building Game</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Link to shared styles.css -->
-<link rel="stylesheet" href="styles.css">
-<!-- Add game-specific styles -->
-<style>
-/* Styles specific to the sentence game */
-#image-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-#scrambled-words {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 20px;
-    gap: 10px;
-}
-#answer-area {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 20px;
-    gap: 10px;
-}
-.word-tile {
-    font-size: 24px;
-    padding: 10px 15px;
-    background-color: #c61190;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    user-select: none;
-}
-.empty-slot {
-    width: 100px;
-    height: 50px;
-    border: 2px dashed #c61190;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-#message {
-    font-size: 18px;
-    margin-top: 10px;
-    color: green;
-    text-align: center;
-    min-height: 24px;
-}
-/* Additional styles for buttons */
-#button-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-#button-container button {
-    padding: 10px 20px;
-    font-size: 18px;
-    background-color: #c61190;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-#button-container button.hidden {
-    display: none;
-}
-/* Style for the progress bar */
-#progress-container {
-    width: 100%;
-    background-color: #e0e0e0;
-    height: 10px;
-    margin-bottom: 20px;
-}
-#progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: #c61190;
-}
-/* Styles for the end game summary */
-#summary-container {
-    margin-top: 20px;
-}
-#summary-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-#summary-table th, #summary-table td {
-    border: 1px solid #c61190;
-    padding: 8px;
-    text-align: left;
-}
-#summary-table th {
-    background-color: #c61190;
-    color: white;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Indie's Plural Game</title>
+    <!-- Link to the external stylesheet -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<!-- Back to Games Button -->
-<a id="back-button" href="https://mrlchapman.github.io/Indie/">← Back to Games</a>
+    <!-- Back to Games Button -->
+    <a id="back-button" href="https://mrlchapman.github.io/Indie/">← Back to Games</a>
 
-<div id="game-container">
-    <h1>Indie's Sentence Building Game</h1>
-    <div id="progress-container">
-        <div id="progress-bar"></div>
+    <div id="game-container">
+        <h1>Indie's Plural Game</h1>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="word-display"></div>
+        <div id="image-container">
+            <img id="word-image" alt="Image representing the word" src="" width="200" height="200">
+        </div>
+        <div class="button-container">
+            <button onclick="checkAnswer('s')">s</button>
+            <button onclick="checkAnswer('es')">es</button>
+            <button onclick="checkAnswer('ies')">ies</button>
+        </div>
+        <div id="message"></div>
+        <button id="next-button" class="hidden" onclick="nextWord()">Next</button>
+        <div id="score">Score: 0</div>
     </div>
-    <div id="image-container">
-        <img id="sentence-image" alt="Image representing the sentence" src="" width="300" height="200">
-    </div>
-    <div id="scrambled-words">
-        <!-- Scrambled words will appear here -->
-    </div>
-    <div id="answer-area">
-        <!-- Empty slots will be here -->
-    </div>
-    <div id="button-container">
-        <button id="check-button" onclick="checkSentence()">Check Sentence</button>
-        <button id="next-button" class="hidden" onclick="nextSentence()">Next</button>
-    </div>
-    <div id="message"></div>
-    <div id="score">Score: 0</div>
-</div>
 
-<!-- Include the sentences array directly in the HTML -->
-<script>
-let sentences = [
-    {
-        image: 'https://img.freepik.com/premium-photo/cartoon-tree-with-happy-face_889779-1034.jpg',
-        words: ['The', 'tree', 'is', 'tall']
-    },
-    {
-        image: 'https://www.shutterstock.com/image-vector/happy-cute-kid-girl-riding-600nw-1555682591.jpg',
-        words: ['The', 'girl', 'rides', 'the', 'bike']
-    },
-    {
-        image: 'https://png.pngtree.com/png-vector/20240316/ourlarge/pngtree-cartoon-dripping-faucet-png-image_11977886.png',
-        words: ['The', 'tap', 'is', 'on']
-    },
-    {
-        image: 'https://img.freepik.com/premium-photo/cartoon-beach-scene_889779-1056.jpg',
-        words: ['Indie', 'goes', 'to', 'the', 'beach']
-    },
-    // Add more sentences as desired
-];
-</script>
+    <!-- Include the external words from game.js -->
+    <script src="game.js"></script>
 
-<!-- Game script -->
-<script>
-let currentSentenceIndex = 0;
-let score = 0;
-let totalSentences = sentences.length;
-let incorrectSentences = []; // To store incorrect sentences
+    <!-- Inline script for the game logic -->
+    <script>
+        // Create pluralWords array by adding the 'plural' property to each word
+        const pluralWords = words.map(wordObj => {
+            const word = wordObj.word.toLowerCase();
+            let pluralRule = 's'; // Default rule
 
-// Shuffle the sentences to display them in random order
-shuffleArray(sentences);
+            // Determine the pluralization rule
+            if (word.endsWith('y') && !['a', 'e', 'i', 'o', 'u'].includes(word[word.length - 2])) {
+                pluralRule = 'ies';
+            } else if (word.endsWith('s') || word.endsWith('x') || word.endsWith('z') || word.endsWith('ch') || word.endsWith('sh')) {
+                pluralRule = 'es';
+            }
 
-displaySentence();
+            return { ...wordObj, plural: pluralRule };
+        });
 
-function displaySentence() {
-    const sentenceObj = sentences[currentSentenceIndex];
+        // Shuffle and select words for the game
+        shuffleArray(pluralWords);
+        const gameWords = pluralWords.slice(0, 10);
 
-    // Use the provided words array as the correct order
-    sentenceObj.correctOrder = [...sentenceObj.words];
+        let currentWordIndex = 0;
+        let score = 0;
+        let totalQuestions = gameWords.length;
+        let incorrectAnswers = []; // Array to store incorrect answers
 
-    // Display image
-    document.getElementById('sentence-image').src = sentenceObj.image;
-    document.getElementById('sentence-image').alt = 'Image representing the sentence';
+        displayWord(); // Initial call to display the first word
 
-    // Reset areas
-    document.getElementById('scrambled-words').innerHTML = '';
-    document.getElementById('answer-area').innerHTML = '';
-    document.getElementById('message').textContent = '';
-    document.getElementById('message').style.color = 'green'; // Reset message color
-    document.getElementById('next-button').classList.add('hidden');
-    document.getElementById('check-button').classList.remove('hidden');
-    document.getElementById('check-button').disabled = false;
-    document.getElementById('check-button').classList.remove('hidden');
-
-    // Shuffle words
-    const scrambledWords = shuffleArray(sentenceObj.words.slice());
-
-    // Display scrambled words
-    scrambledWords.forEach((word) => {
-        const wordTile = document.createElement('div');
-        wordTile.classList.add('word-tile');
-        wordTile.textContent = word;
-        wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
-        document.getElementById('scrambled-words').appendChild(wordTile);
-    });
-
-    // Create empty slots in the answer area
-    const answerArea = document.getElementById('answer-area');
-    for (let i = 0; i < sentenceObj.words.length; i++) {
-        const slot = document.createElement('div');
-        slot.classList.add('empty-slot');
-        slot.dataset.index = i;
-        slot.addEventListener('click', slotClick); // Handle click to move word back up
-        answerArea.appendChild(slot);
-    }
-
-    updateProgressBar();
-}
-
-// Function to handle tapping on a word tile
-function wordTileClick(event) {
-    const wordTile = event.target;
-    const parent = wordTile.parentElement;
-
-    // If the wordTile is in the scrambled-words area
-    if (parent && parent.id === 'scrambled-words') {
-        const emptySlot = Array.from(document.querySelectorAll('.empty-slot')).find(slot => !slot.firstChild);
-        if (emptySlot) {
-            emptySlot.appendChild(wordTile);
+        function displayWord() {
+            const wordObj = gameWords[currentWordIndex];
+            document.getElementById('word-display').textContent = wordObj.word;
+            document.getElementById('word-image').src = wordObj.image;
+            document.getElementById('word-image').alt = `Image of ${wordObj.word}`;
+            document.getElementById('message').textContent = '';
+            document.getElementById('next-button').classList.add('hidden');
+            enableAnswerButtons(true);
+            updateProgressBar();
         }
-    }
-}
 
-// Function to handle tapping on an empty slot to remove the word
-function slotClick(event) {
-    const slot = event.currentTarget;
-    if (slot.firstChild) {
-        const wordTile = slot.firstChild;
-        document.getElementById('scrambled-words').appendChild(wordTile);
-    }
-}
+        function checkAnswer(answer) {
+            enableAnswerButtons(false); // Disable answer buttons after an answer is given
 
-// Shuffle function
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
+            const wordObj = gameWords[currentWordIndex];
+            const word = wordObj.word.toLowerCase();
+            let correctPlural;
 
-// Function to check the sentence
-function checkSentence() {
-    const sentenceObj = sentences[currentSentenceIndex];
-    const answerWords = Array.from(document.querySelectorAll('.empty-slot')).map(slot => slot.firstChild ? slot.firstChild.textContent : '');
+            if (wordObj.plural === 'ies') {
+                correctPlural = word.slice(0, -1) + 'ies';
+            } else if (wordObj.plural === 'es') {
+                correctPlural = word + 'es';
+            } else {
+                correctPlural = word + 's';
+            }
 
-    // Compare answerWords with sentenceObj.correctOrder
-    const isCorrect = answerWords.join(' ') === sentenceObj.correctOrder.join(' ');
+            const message = document.getElementById('message');
 
-    const messageElement = document.getElementById('message');
-    if (isCorrect) {
-        messageElement.textContent = 'Correct! Well done! ✔️';
-        messageElement.style.color = 'green';
-        score++;
-        document.getElementById('score').textContent = `Score: ${score}`;
-    } else {
-        messageElement.textContent = 'Incorrect! 🙁';
-        messageElement.style.color = 'red';
-        // Store the incorrect sentence
-        incorrectSentences.push({
-            image: sentenceObj.image,
-            correctSentence: sentenceObj.correctOrder.join(' '),
-            yourAnswer: answerWords.join(' ')
-        });
-    }
+            if (answer === wordObj.plural) {
+                score++;
+                message.textContent = "Correct! Well done! 🎉";
+                message.style.color = "green";
+                document.getElementById('word-display').textContent = correctPlural; // Display the correct plural
+            } else {
+                message.textContent = `Oops! The correct answer is '${correctPlural}'. 🙁`;
+                message.style.color = "red";
+                // Store the incorrect answer
+                incorrectAnswers.push({
+                    word: word,
+                    userAnswer: answer,
+                    correctAnswer: correctPlural
+                });
+            }
 
-    // Disable and hide check button after first attempt
-    document.getElementById('check-button').disabled = true;
-    document.getElementById('check-button').classList.add('hidden');
-    document.getElementById('next-button').classList.remove('hidden');
-}
+            document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('next-button').classList.remove('hidden'); // Show the next button
+        }
 
-// Function to proceed to the next sentence
-function nextSentence() {
-    currentSentenceIndex++;
-    if (currentSentenceIndex < sentences.length) {
-        displaySentence();
-    } else {
-        endGame();
-    }
-}
+        function nextWord() {
+            currentWordIndex++;
+            if (currentWordIndex < totalQuestions) {
+                displayWord();
+            } else {
+                endGame();
+            }
+        }
 
-// Function to end the game and display results
-function endGame() {
-    // Display the sentences the user got wrong
-    const gameContainer = document.getElementById('game-container');
-    gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalSentences}</p>`;
+        function enableAnswerButtons(enable) {
+            document.querySelectorAll('.button-container button').forEach(button => {
+                button.disabled = !enable;
+            });
+        }
 
-    if (incorrectSentences.length > 0) {
-        // Create a table to display incorrect answers
-        let resultHTML = `
-            <h2>Review Your Incorrect Sentences:</h2>
-            <table id="summary-table">
-                <tr>
-                    <th>Image</th>
-                    <th>Correct Sentence</th>
-                    <th>Your Answer</th>
-                </tr>
-        `;
-        incorrectSentences.forEach(item => {
-            resultHTML += `
-                <tr>
-                    <td><img src="${item.image}" alt="Sentence Image" width="100"></td>
-                    <td>${item.correctSentence}</td>
-                    <td>${item.yourAnswer || '(No answer)'}</td>
-                </tr>
-            `;
-        });
-        resultHTML += `</table>`;
-        gameContainer.innerHTML += resultHTML;
-    } else {
-        gameContainer.innerHTML += `<p>Excellent work! You got all sentences correct! 🎉</p>`;
-    }
+        function endGame() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalQuestions}</p>`;
 
-    gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
-}
+            if (incorrectAnswers.length > 0) {
+                // Create a table to display incorrect answers
+                let resultHTML = `
+                    <h2>Review Your Incorrect Answers:</h2>
+                    <table>
+                        <tr>
+                            <th>Word</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                        </tr>
+                `;
+                incorrectAnswers.forEach(item => {
+                    let userPlural;
+                    if (item.userAnswer === 'ies') {
+                        userPlural = item.word.slice(0, -1) + 'ies';
+                    } else if (item.userAnswer === 'es') {
+                        userPlural = item.word + 'es';
+                    } else {
+                        userPlural = item.word + 's';
+                    }
+                    resultHTML += `
+                        <tr>
+                            <td>${item.word}</td>
+                            <td>${userPlural}</td>
+                            <td>${item.correctAnswer}</td>
+                        </tr>
+                    `;
+                });
+                resultHTML += `</table>`;
+                gameContainer.innerHTML += resultHTML;
+            } else {
+                gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
+            }
 
-// Function to update the progress bar
-function updateProgressBar() {
-    const progressBar = document.getElementById('progress-bar');
-    const progressPercentage = ((currentSentenceIndex) / totalSentences) * 100;
-    progressBar.style.width = `${progressPercentage}%`;
-}
-</script>
+            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = ((currentWordIndex) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    </script>
 </body>
 </html>

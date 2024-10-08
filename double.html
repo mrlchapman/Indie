@@ -66,7 +66,15 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
-        .answer-button {
+        .answer-input {
+            width: 100px;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            border: 2px solid #c61190;
+            border-radius: 5px;
+        }
+        #check-button, #next-button {
             padding: 10px 20px;
             font-size: 18px;
             background-color: #c61190;
@@ -74,17 +82,14 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            width: 100px;
             transition: background-color 0.3s;
+            margin: 10px;
         }
-        .answer-button:hover {
+        #check-button:hover, #next-button:hover {
             background-color: #a50e77;
         }
-        .answer-button.correct {
-            background-color: #4CAF50 !important;
-        }
-        .answer-button.incorrect {
-            background-color: #f44336 !important;
+        #check-button.hidden, #next-button.hidden {
+            display: none;
         }
         #feedback {
             font-size: 18px;
@@ -95,13 +100,28 @@
             font-size: 20px;
             color: #333;
         }
+        #incorrect-answers {
+            text-align: left;
+            margin-top: 20px;
+        }
+        #incorrect-answers ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #incorrect-answers li {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
         /* Responsive Design */
         @media (max-width: 600px) {
             #answers {
                 flex-direction: column;
                 align-items: center;
             }
-            .answer-button {
+            .answer-input {
                 width: 80%;
             }
         }
@@ -124,10 +144,19 @@
             <span id="equation">____ + 0 = 0</span>
         </div>
         <div id="answers">
-            <!-- Answer Buttons will be generated here -->
+            <!-- Answer Input will be generated here -->
+            <input type="number" id="answer-input" class="answer-input" placeholder="Your answer">
         </div>
+        <button id="check-button" onclick="checkAnswer()">Check</button>
+        <button id="next-button" class="hidden" onclick="nextQuestion()">Next</button>
         <div id="feedback"></div>
         <div id="score">Score: 0</div>
+        <div id="incorrect-answers" class="hidden">
+            <h2>Incorrect Answers:</h2>
+            <ul id="incorrect-list">
+                <!-- Incorrect answers will be listed here -->
+            </ul>
+        </div>
     </div>
 
     <!-- Game Script -->
@@ -138,115 +167,97 @@
             { 
                 number: 0, 
                 equation: '____ + 0 = 0', 
-                correctAnswer: '0', 
-                options: ['0', '1', '2'] 
+                correctAnswer: '0'
             },
             { 
                 number: 0, 
                 equation: '0 + ____ = 0', 
-                correctAnswer: '0', 
-                options: ['0', '1', '2'] 
+                correctAnswer: '0'
             },
             { 
                 number: 0, 
                 equation: '0 + 0 = ____', 
-                correctAnswer: '0', 
-                options: ['0', '1', '2'] 
+                correctAnswer: '0'
             },
             // For number 1
             { 
                 number: 1, 
                 equation: '____ + 1 = 2', 
-                correctAnswer: '1', 
-                options: ['1', '2', '3'] 
+                correctAnswer: '1'
             },
             { 
                 number: 1, 
                 equation: '1 + ____ = 2', 
-                correctAnswer: '1', 
-                options: ['1', '2', '3'] 
+                correctAnswer: '1'
             },
             { 
                 number: 1, 
                 equation: '1 + 1 = ____', 
-                correctAnswer: '2', 
-                options: ['1', '2', '3'] 
+                correctAnswer: '2'
             },
             // For number 2
             { 
                 number: 2, 
                 equation: '____ + 2 = 4', 
-                correctAnswer: '2', 
-                options: ['1', '2', '3'] 
+                correctAnswer: '2'
             },
             { 
                 number: 2, 
                 equation: '2 + ____ = 4', 
-                correctAnswer: '2', 
-                options: ['1', '2', '3'] 
+                correctAnswer: '2'
             },
             { 
                 number: 2, 
                 equation: '2 + 2 = ____', 
-                correctAnswer: '4', 
-                options: ['3', '4', '5'] 
+                correctAnswer: '4'
             },
             // For number 3
             { 
                 number: 3, 
                 equation: '____ + 3 = 6', 
-                correctAnswer: '3', 
-                options: ['2', '3', '4'] 
+                correctAnswer: '3'
             },
             { 
                 number: 3, 
                 equation: '3 + ____ = 6', 
-                correctAnswer: '3', 
-                options: ['2', '3', '4'] 
+                correctAnswer: '3'
             },
             { 
                 number: 3, 
                 equation: '3 + 3 = ____', 
-                correctAnswer: '6', 
-                options: ['5', '6', '7'] 
+                correctAnswer: '6'
             },
             // For number 4
             { 
                 number: 4, 
                 equation: '____ + 4 = 8', 
-                correctAnswer: '4', 
-                options: ['3', '4', '5'] 
+                correctAnswer: '4'
             },
             { 
                 number: 4, 
                 equation: '4 + ____ = 8', 
-                correctAnswer: '4', 
-                options: ['3', '4', '5'] 
+                correctAnswer: '4'
             },
             { 
                 number: 4, 
                 equation: '4 + 4 = ____', 
-                correctAnswer: '8', 
-                options: ['7', '8', '9'] 
+                correctAnswer: '8'
             },
             // For number 5
             { 
                 number: 5, 
                 equation: '____ + 5 = 10', 
-                correctAnswer: '5', 
-                options: ['4', '5', '6'] 
+                correctAnswer: '5'
             },
             { 
                 number: 5, 
                 equation: '5 + ____ = 10', 
-                correctAnswer: '5', 
-                options: ['4', '5', '6'] 
+                correctAnswer: '5'
             },
             { 
                 number: 5, 
                 equation: '5 + 5 = ____', 
-                correctAnswer: '10', 
-                options: ['9', '10', '11'] 
+                correctAnswer: '10'
             },
         ];
 
@@ -255,7 +266,7 @@
         let score = 0;
         let incorrectAnswers = [];
 
-        // Shuffle Function
+        // Shuffle Function (Fisher-Yates)
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -271,6 +282,8 @@
             score = 0;
             incorrectAnswers = [];
             document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('incorrect-answers').classList.add('hidden');
+            document.getElementById('incorrect-list').innerHTML = '';
             updateProgressBar();
             loadQuestion();
         }
@@ -281,67 +294,80 @@
             const number = currentData.number;
             const equation = currentData.equation;
             const correctAnswer = currentData.correctAnswer;
-            const options = currentData.options;
 
             document.getElementById('number').textContent = number;
             document.getElementById('number-image').src = `images/${number}.png`;
             document.getElementById('number-image').alt = `Double ${number}`;
             document.getElementById('equation').textContent = equation;
 
-            generateAnswerButtons(options, correctAnswer);
-
+            // Clear previous input and feedback
+            const answerInput = document.getElementById('answer-input');
+            answerInput.value = '';
+            answerInput.disabled = false;
             document.getElementById('feedback').textContent = '';
+            document.getElementById('check-button').classList.remove('hidden');
+            document.getElementById('next-button').classList.add('hidden');
+
+            // Scroll to top for better user experience
+            window.scrollTo(0, 0);
         }
 
-        // Generate Answer Buttons
-        function generateAnswerButtons(options, correctAnswer) {
-            const answersDiv = document.getElementById('answers');
-            answersDiv.innerHTML = '';
+        // Check Answer
+        function checkAnswer() {
+            const currentData = shuffledQuestions[currentQuestionIndex];
+            const correctAnswer = currentData.correctAnswer;
+            const userAnswer = document.getElementById('answer-input').value.trim();
 
-            shuffle(options).forEach(option => {
-                const button = document.createElement('button');
-                button.classList.add('answer-button');
-                button.textContent = option;
-                button.addEventListener('click', () => selectAnswer(button, option, correctAnswer));
-                answersDiv.appendChild(button);
-            });
-        }
+            const feedbackDiv = document.getElementById('feedback');
+            const checkButton = document.getElementById('check-button');
+            const answerInput = document.getElementById('answer-input');
 
-        // Select Answer
-        function selectAnswer(button, selected, correct) {
-            if (selected === correct) {
-                button.classList.add('correct');
-                document.getElementById('feedback').textContent = 'Correct! Well done! 🎉';
+            if (userAnswer === '') {
+                feedbackDiv.textContent = 'Please enter an answer.';
+                feedbackDiv.style.color = '#f44336';
+                return;
+            }
+
+            if (userAnswer === correctAnswer) {
+                feedbackDiv.textContent = 'Correct! Well done! 🎉';
+                feedbackDiv.style.color = '#4CAF50';
                 score++;
                 document.getElementById('score').textContent = `Score: ${score}`;
             } else {
-                button.classList.add('incorrect');
-                document.getElementById('feedback').textContent = `Incorrect. The correct answer was ${correct}.`;
+                feedbackDiv.textContent = `Incorrect. The correct answer was ${correctAnswer}.`;
+                feedbackDiv.style.color = '#f44336';
+                // Record incorrect answer
                 incorrectAnswers.push({
-                    equation: document.getElementById('equation').textContent,
-                    correctAnswer: correct
+                    equation: currentData.equation,
+                    yourAnswer: userAnswer,
+                    correctAnswer: correctAnswer
                 });
             }
 
-            // Disable all buttons after selection
-            const allButtons = document.querySelectorAll('.answer-button');
-            allButtons.forEach(btn => btn.disabled = true);
+            // Disable input and check button
+            answerInput.disabled = true;
+            checkButton.classList.add('hidden');
 
-            // Move to next question after a short delay
-            setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < shuffledQuestions.length) {
-                    loadQuestion();
-                } else {
-                    endGame();
-                }
-            }, 1500);
+            // Show Next button
+            document.getElementById('next-button').classList.remove('hidden');
+
+            updateProgressBar();
+        }
+
+        // Move to Next Question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
         }
 
         // Update Progress Bar
         function updateProgressBar() {
             const progressBar = document.getElementById('progress-bar');
-            const progress = (currentQuestionIndex / shuffledQuestions.length) * 100;
+            const progress = ((currentQuestionIndex) / shuffledQuestions.length) * 100;
             progressBar.style.width = `${progress}%`;
         }
 
@@ -352,10 +378,12 @@
                 <h1>Game Over!</h1>
                 <p>Your final score is: ${score} out of ${shuffledQuestions.length}</p>
                 ${incorrectAnswers.length > 0 ? `
-                    <h2>Review Incorrect Answers:</h2>
-                    <ul>
-                        ${incorrectAnswers.map(item => `<li>${item.equation} <strong>${item.correctAnswer}</strong></li>`).join('')}
-                    </ul>
+                    <div id="incorrect-answers">
+                        <h2>Incorrect Answers:</h2>
+                        <ul id="incorrect-list">
+                            ${incorrectAnswers.map(item => `<li>${item.equation.replace('____', `<strong>${item.yourAnswer}</strong>`)} <br> <em>Correct Answer: ${item.correctAnswer}</em></li>`).join('')}
+                        </ul>
+                    </div>
                 ` : ''}
                 <button onclick="initGame()" style="padding: 10px 20px; font-size: 18px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer;">Play Again</button>
             `;

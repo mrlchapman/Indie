@@ -145,9 +145,11 @@
     <script>
         // Doubles Data with Equations
         const doublesData = [
-            // Example data, truncated for simplicity
             { number: 0, equationType: 'input_first', addend: 0, result: 0, correctAnswer: '0' },
-            // Additional entries...
+            { number: 1, equationType: 'input_first', addend: 1, result: 2, correctAnswer: '1' },
+            { number: 2, equationType: 'input_first', addend: 2, result: 4, correctAnswer: '2' },
+            { number: 3, equationType: 'input_first', addend: 3, result: 6, correctAnswer: '3' },
+            { number: 4, equationType: 'input_first', addend: 4, result: 8, correctAnswer: '4' },
         ];
 
         let shuffledQuestions = [];
@@ -191,11 +193,11 @@
             const equationSpan = document.getElementById('equation');
             let equationHTML = '';
             if (equationType === 'input_first') {
-                equationHTML = `<input type="number" id="answer-input" class="answer-input" placeholder="__"> + ${addend} = ${result}`;
+                equationHTML = `<input type="number" id="answer-input" class="answer-input" placeholder="__" value=""> + ${addend} = ${result}`;
             } else if (equationType === 'input_second') {
-                equationHTML = `${number} + <input type="number" id="answer-input" class="answer-input" placeholder="__"> = ${result}`;
+                equationHTML = `${number} + <input type="number" id="answer-input" class="answer-input" placeholder="__" value=""> = ${result}`;
             } else if (equationType === 'input_result') {
-                equationHTML = `${number} + ${addend} = <input type="number" id="answer-input" class="answer-input" placeholder="__">`;
+                equationHTML = `${number} + ${addend} = <input type="number" id="answer-input" class="answer-input" placeholder="__" value="">`;
             }
             equationSpan.innerHTML = equationHTML;
 
@@ -204,8 +206,9 @@
             document.getElementById('check-button').classList.remove('hidden');
             document.getElementById('next-button').classList.add('hidden');
 
-            // Focus on the input box
+            // Enable input and focus on the input box
             const answerInput = document.getElementById('answer-input');
+            answerInput.disabled = false;
             answerInput.focus();
         }
 
@@ -266,7 +269,7 @@
         // Update Progress Bar
         function updateProgressBar() {
             const progressBar = document.getElementById('progress-bar');
-            const progress = ((currentQuestionIndex) / shuffledQuestions.length) * 100;
+            const progress = ((currentQuestionIndex + 1) / shuffledQuestions.length) * 100;
             progressBar.style.width = `${progress}%`;
         }
 

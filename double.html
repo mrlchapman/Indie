@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>Indie's Doubles Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- External Stylesheet (optional) -->
+    <!-- Link to shared styles.css (optional) -->
     <link rel="stylesheet" href="styles.css">
     <!-- Game-specific Styles -->
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f6f2;
+            background-color: #f0f8ff;
             text-align: center;
             padding: 20px;
         }
@@ -38,31 +38,30 @@
         }
         #answers {
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-        .answer-box {
-            width: 100px;
-            height: 50px;
-            border: 2px dashed #c61190;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
             justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .answer-button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #c61190;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            background-color: #fefefe;
-            position: relative;
+            width: 100px;
+            transition: background-color 0.3s;
         }
-        .answer-box.correct {
-            border-color: #4CAF50;
-            background-color: #d4edda;
+        .answer-button:hover {
+            background-color: #a50e77;
         }
-        .answer-box.incorrect {
-            border-color: #f44336;
-            background-color: #f8d7da;
+        .answer-button.correct {
+            background-color: #4CAF50 !important;
         }
-        .hidden {
-            display: none;
+        .answer-button.incorrect {
+            background-color: #f44336 !important;
         }
         #feedback {
             font-size: 18px;
@@ -76,8 +75,8 @@
         #progress-container {
             width: 100%;
             background-color: #e0e0e0;
-            height: 10px;
-            border-radius: 5px;
+            height: 20px;
+            border-radius: 10px;
             overflow: hidden;
             margin-bottom: 20px;
         }
@@ -93,9 +92,8 @@
                 flex-direction: column;
                 align-items: center;
             }
-            .answer-box {
+            .answer-button {
                 width: 80%;
-                margin-bottom: 10px;
             }
         }
     </style>
@@ -114,7 +112,7 @@
             <img id="number-image" src="" alt="Number Image">
         </div>
         <div id="answers">
-            <!-- Answer Boxes will be generated here -->
+            <!-- Answer Buttons will be generated here -->
         </div>
         <div id="feedback"></div>
         <div id="score">Score: 0</div>
@@ -124,12 +122,12 @@
     <script>
         // Doubles Data
         const doublesData = [
-            { number: 0, correctAnswers: ['0', '0 + 0'] },
-            { number: 1, correctAnswers: ['2', '1 + 1'] },
-            { number: 2, correctAnswers: ['4', '2 + 2'] },
-            { number: 3, correctAnswers: ['6', '3 + 3'] },
-            { number: 4, correctAnswers: ['8', '4 + 4'] },
-            { number: 5, correctAnswers: ['10', '5 + 5'] }
+            { number: 0, correctAnswers: ['0', '0 + 0'], result: 0 },
+            { number: 1, correctAnswers: ['2', '1 + 1'], result: 2 },
+            { number: 2, correctAnswers: ['4', '2 + 2'], result: 4 },
+            { number: 3, correctAnswers: ['6', '3 + 3'], result: 6 },
+            { number: 4, correctAnswers: ['8', '4 + 4'], result: 8 },
+            { number: 5, correctAnswers: ['10', '5 + 5'], result: 10 }
         ];
 
         let shuffledQuestions = [];
@@ -161,73 +159,91 @@
             document.getElementById('number').textContent = currentData.number;
             document.getElementById('number-image').src = `images/${currentData.number}.png`;
             document.getElementById('number-image').alt = `Double ${currentData.number}`;
-            generateAnswers(currentData.correctAnswers);
+            generateAnswers(currentData);
             document.getElementById('feedback').textContent = '';
         }
 
-        // Generate Answer Boxes
-        function generateAnswers(correctAnswers) {
+        // Generate Answer Buttons
+        function generateAnswers(data) {
             const answersDiv = document.getElementById('answers');
             answersDiv.innerHTML = '';
 
             // Prepare answer options
-            const allAnswers = [...correctAnswers];
-            // Add one incorrect answer
-            const incorrectAnswer = getIncorrectAnswer(correctAnswers);
-            allAnswers.push(incorrectAnswer);
+            const correctAnswers = data.correctAnswers;
+            const incorrectAnswer = getIncorrectAnswer(data);
 
-            // Shuffle answer options
+            // Combine correct and incorrect answers
+            const allAnswers = [...correctAnswers, incorrectAnswer];
             const shuffledAnswers = shuffle(allAnswers);
 
-            // Randomly decide the position of the empty slot
-            const emptySlotIndex = Math.floor(Math.random() * 3);
+            // Determine where to place the blank in the equation
+            const blankPosition = Math.floor(Math.random() * 3); // 0: first number, 1: second number, 2: result
 
-            for (let i = 0; i < 3; i++) {
-                const answerBox = document.createElement('div');
-                answerBox.classList.add('answer-box');
-                if (i === emptySlotIndex) {
-                    // Empty Slot
-                    answerBox.classList.add('empty-slot');
-                    answerBox.textContent = '';
-                } else {
-                    // Answer Options
-                    answerBox.textContent = shuffledAnswers[i];
-                    answerBox.addEventListener('click', () => selectAnswer(answerBox, correctAnswers));
-                }
-                answersDiv.appendChild(answerBox);
+            // Create the equation string with a blank
+            let equation = '';
+            if (blankPosition === 0) {
+                equation = `____ + ${data.number} = ${data.result}`;
+            } else if (blankPosition === 1) {
+                equation = `${data.number} + ____ = ${data.result}`;
+            } else {
+                equation = `${data.number} + ${data.number} = ____`;
             }
+
+            // Display the equation with a blank
+            document.getElementById('question').textContent = `What is double ${data.number}?`;
+            // Optionally, display the equation below
+            const equationDiv = document.createElement('div');
+            equationDiv.id = 'equation';
+            equationDiv.style.fontSize = '20px';
+            equationDiv.style.marginTop = '10px';
+            equationDiv.textContent = equation;
+            document.getElementById('question').appendChild(equationDiv);
+
+            // Assign answer options based on the blank position
+            shuffledAnswers.forEach(answer => {
+                const button = document.createElement('button');
+                button.classList.add('answer-button');
+                button.textContent = answer;
+                button.addEventListener('click', () => selectAnswer(button, data, blankPosition));
+                answersDiv.appendChild(button);
+            });
         }
 
         // Get Incorrect Answer
-        function getIncorrectAnswer(correctAnswers) {
-            const incorrectOptions = [
-                '1',
-                '3',
-                '5',
-                '7',
-                '9',
-                '11',
-                '1 + 0',
-                '2 + 1',
-                '3 + 1',
-                '4 + 1'
-            ];
-            // Filter out any answers that are correct
-            const filtered = incorrectOptions.filter(ans => !correctAnswers.includes(ans));
-            // Shuffle and pick one
-            return shuffle(filtered)[0];
+        function getIncorrectAnswer(data) {
+            const possibleIncorrect = [];
+            for (let i = 0; i <= 10; i++) {
+                if (!data.correctAnswers.includes(i.toString())) {
+                    possibleIncorrect.push(i.toString());
+                }
+            }
+            return shuffle(possibleIncorrect)[0];
         }
 
         // Select Answer
-        function selectAnswer(selectedBox, correctAnswers) {
-            const currentData = shuffledQuestions[currentQuestionIndex];
-            if (correctAnswers.includes(selectedBox.textContent)) {
-                // Correct Answer
-                selectedBox.classList.add('correct');
+        function selectAnswer(button, data, blankPosition) {
+            const selectedAnswer = button.textContent;
+            const correctAnswers = data.correctAnswers;
+
+            // Determine the correct answer based on the blank position
+            let correctAnswer = '';
+            if (blankPosition === 0) {
+                correctAnswer = data.correctAnswers[0]; // '0' for 0 + 0 = 0
+            } else if (blankPosition === 1) {
+                correctAnswer = data.correctAnswers[0]; // '0' for 0 + 0 = 0
+            } else {
+                correctAnswer = data.correctAnswers[0].includes('+') ? data.correctAnswers[1] : data.correctAnswers[0];
+            }
+
+            // Check if the selected answer is correct
+            if (correctAnswers.includes(selectedAnswer)) {
+                button.classList.add('correct');
                 document.getElementById('feedback').textContent = 'Correct! Well done! 🎉';
                 score++;
                 document.getElementById('score').textContent = `Score: ${score}`;
                 updateProgressBar();
+                // Disable all buttons
+                disableAnswerButtons();
                 // Move to next question after a short delay
                 setTimeout(() => {
                     currentQuestionIndex++;
@@ -238,15 +254,19 @@
                     }
                 }, 1500);
             } else {
-                // Incorrect Answer
-                selectedBox.classList.add('incorrect');
-                document.getElementById('feedback').textContent = 'Oops! Try again.';
-                // Remove the incorrect class after a delay
-                setTimeout(() => {
-                    selectedBox.classList.remove('incorrect');
-                    document.getElementById('feedback').textContent = '';
-                }, 1500);
+                button.classList.add('incorrect');
+                document.getElementById('feedback').textContent = `Oops! That's not correct. Try again.`;
+                // Optionally, disable the incorrect button
+                button.disabled = true;
             }
+        }
+
+        // Disable All Answer Buttons
+        function disableAnswerButtons() {
+            const buttons = document.querySelectorAll('.answer-button');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+            });
         }
 
         // Update Progress Bar

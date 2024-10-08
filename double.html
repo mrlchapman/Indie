@@ -300,10 +300,16 @@
             score = 0;
             incorrectAnswers = [];
             document.getElementById('score').textContent = `Score: ${score}`;
-            document.getElementById('incorrect-answers')?.remove();
+            const incorrectSection = document.getElementById('incorrect-answers');
+            if (incorrectSection) {
+                incorrectSection.remove();
+            }
             updateProgressBar();
             loadQuestion();
         }
+
+        // Assign initGame to window to make it globally accessible
+        window.initGame = initGame;
 
         // Load Question
         function loadQuestion() {
@@ -331,7 +337,8 @@
             document.getElementById('next-button').classList.add('hidden');
 
             // Focus on the input box
-            document.getElementById('answer-input').focus();
+            const answerInput = document.getElementById('answer-input');
+            answerInput.focus();
         }
 
         // Check Answer
@@ -360,7 +367,9 @@
                 feedbackDiv.style.color = '#f44336';
                 // Record incorrect answer
                 incorrectAnswers.push({
-                    equation: currentData.equation,
+                    equation: currentData.equationType === 'input_first' ? '____ + ' + currentData.addend + ' = ' + currentData.result :
+                              currentData.equationType === 'input_second' ? currentData.number + ' + ____ = ' + currentData.result :
+                              currentData.number + ' + ' + currentData.addend + ' = ____',
                     yourAnswer: userAnswer,
                     correctAnswer: correctAnswer
                 });
@@ -416,7 +425,7 @@
                 <h1>Game Over!</h1>
                 <p>Your final score is: ${score} out of ${shuffledQuestions.length}</p>
                 ${incorrectHTML}
-                <button onclick="initGame()" style="padding: 10px 20px; font-size: 18px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer;">Play Again</button>
+                <button id="play-again-button" onclick="initGame()" style="padding: 10px 20px; font-size: 18px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer;">Play Again</button>
             `;
         }
 

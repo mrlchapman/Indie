@@ -245,7 +245,7 @@
                 feedbackDiv.style.color = '#f44336';
                 // Record incorrect answer
                 incorrectAnswers.push({
-                    equation: equationSpan.innerHTML.replace('<input type="number" id="answer-input" class="answer-input" placeholder="__" value="">', '____'),
+                    equation: equationSpan.textContent.replace('____', `<strong>${userAnswer}</strong>`),
                     yourAnswer: userAnswer,
                     correctAnswer: correctAnswer
                 });

@@ -145,11 +145,11 @@
     <script>
         // Doubles Data with Equations
         const doublesData = [
-            { number: 0, equationType: 'input_first', addend: 0, result: 0, correctAnswer: '0' },
-            { number: 1, equationType: 'input_first', addend: 1, result: 2, correctAnswer: '1' },
-            { number: 2, equationType: 'input_first', addend: 2, result: 4, correctAnswer: '2' },
-            { number: 3, equationType: 'input_first', addend: 3, result: 6, correctAnswer: '3' },
-            { number: 4, equationType: 'input_first', addend: 4, result: 8, correctAnswer: '4' },
+            { number: 0, addend: 0, result: 0, correctAnswer: '0' },
+            { number: 1, addend: 1, result: 2, correctAnswer: '1' },
+            { number: 2, addend: 2, result: 4, correctAnswer: '2' },
+            { number: 3, addend: 3, result: 6, correctAnswer: '3' },
+            { number: 4, addend: 4, result: 8, correctAnswer: '4' },
         ];
 
         let shuffledQuestions = [];
@@ -184,7 +184,7 @@
         // Load Question
         function loadQuestion() {
             const currentData = shuffledQuestions[currentQuestionIndex];
-            const { number, equationType, addend, result, correctAnswer } = currentData;
+            const { number, addend, result } = currentData;
 
             document.getElementById('number').textContent = number;
             document.getElementById('number-image').src = `images/${number}.png`;
@@ -192,11 +192,14 @@
 
             const equationSpan = document.getElementById('equation');
             let equationHTML = '';
-            if (equationType === 'input_first') {
+
+            // Randomly choose whether to leave the first, second, or result blank
+            const equationType = Math.floor(Math.random() * 3);
+            if (equationType === 0) {
                 equationHTML = `<input type="number" id="answer-input" class="answer-input" placeholder="__" value=""> + ${addend} = ${result}`;
-            } else if (equationType === 'input_second') {
+            } else if (equationType === 1) {
                 equationHTML = `${number} + <input type="number" id="answer-input" class="answer-input" placeholder="__" value=""> = ${result}`;
-            } else if (equationType === 'input_result') {
+            } else {
                 equationHTML = `${number} + ${addend} = <input type="number" id="answer-input" class="answer-input" placeholder="__" value="">`;
             }
             equationSpan.innerHTML = equationHTML;
@@ -239,9 +242,7 @@
                 feedbackDiv.style.color = '#f44336';
                 // Record incorrect answer
                 incorrectAnswers.push({
-                    equation: currentData.equationType === 'input_first' ? '____ + ' + currentData.addend + ' = ' + currentData.result :
-                              currentData.equationType === 'input_second' ? currentData.number + ' + ____ = ' + currentData.result :
-                              currentData.number + ' + ' + currentData.addend + ' = ____',
+                    equation: equationSpan.innerHTML.replace('<input type="number" id="answer-input" class="answer-input" placeholder="__" value="">', '____'),
                     yourAnswer: userAnswer,
                     correctAnswer: correctAnswer
                 });

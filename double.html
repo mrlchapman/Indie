@@ -245,7 +245,7 @@
                 feedbackDiv.style.color = '#f44336';
                 // Record incorrect answer
                 incorrectAnswers.push({
-                    equation: equationSpan.textContent.replace('____', `<strong>${userAnswer}</strong>`),
+                    equation: `${number} + ${addend} = ${result}`,
                     yourAnswer: userAnswer,
                     correctAnswer: correctAnswer
                 });
@@ -289,8 +289,8 @@
                     <ul id="incorrect-list">
                         ${incorrectAnswers.map(item => `
                             <li>
-                                ${item.equation.replace('____', `<strong>${item.yourAnswer}</strong>`)} <br> 
-                                <em>Correct Answer: ${item.correctAnswer}</em>
+                                ${item.equation} <br> 
+                                <em>Your Answer: ${item.yourAnswer} | Correct Answer: ${item.correctAnswer}</em>
                             </li>
                         `).join('')}
                     </ul>

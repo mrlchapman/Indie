@@ -13,5 +13,8 @@ let words = [
     {word: 'hat', image: 'https://cdn.pixabay.com/photo/2022/11/20/20/53/hat-7605221_1280.png'},
     {word: 'hop', image: 'https://images.template.net/82695/free-cartoon-hop-vector-oyq21.jpg'},
     {word: 'mum', image: 'https://media.istockphoto.com/id/1141907474/vector/cute-young-mother-embracing-her-daughter-with-love.jpg?s=612x612&w=0&k=20&c=Wl4jUQPNmuvoZ_OHpDILbJPEYXp2Q2Qt7WCMmGXWRvY='},
-    {word: 'dad', image: 'https://www.shutterstock.com/image-vector/father-his-cute-little-daughter-600nw-1419842672.jpg'}
+    {word: 'dad', image: 'https://www.shutterstock.com/image-vector/father-his-cute-little-daughter-600nw-1419842672.jpg'},
+    {word: 'cup', image: 'https://www.shutterstock.com/image-vector/father-his-cute-little-daughter-600nw-1419842672.jpg'},
+    {word: 'red', image: 'https://www.shutterstock.com/image-vector/father-his-cute-little-daughter-600nw-1419842672.jpg'},
+    {word: 'sun', image: 'https://www.shutterstock.com/image-vector/father-his-cute-little-daughter-600nw-1419842672.jpg'}
 ];

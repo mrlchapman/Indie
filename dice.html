@@ -300,7 +300,10 @@
             score = 0;
             incorrectAnswers = [];
             document.getElementById('score').textContent = `Score: ${score}`;
-            document.getElementById('incorrect-answers')?.remove();
+            const incorrectSection = document.getElementById('incorrect-answers');
+            if (incorrectSection) {
+                incorrectSection.remove();
+            }
             updateProgressBar();
             loadQuestion();
         }
@@ -419,8 +422,11 @@
                 <h1>Game Over!</h1>
                 <p>Your final score is: ${score} out of ${shuffledQuestions.length}</p>
                 ${incorrectHTML}
-                <button onclick="initGame()" style="padding: 10px 20px; font-size: 18px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer;">Play Again</button>
+                <button id="play-again-button" style="padding: 10px 20px; font-size: 18px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer;">Play Again</button>
             `;
+
+            // Attach event listener to "Play Again" button
+            document.getElementById('play-again-button').addEventListener('click', initGame);
         }
 
         // Start the Game on Page Load

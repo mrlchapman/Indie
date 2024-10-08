@@ -151,12 +151,6 @@
         <button id="next-button" class="hidden" onclick="nextQuestion()">Next</button>
         <div id="feedback"></div>
         <div id="score">Score: 0</div>
-        <div id="incorrect-answers" class="hidden">
-            <h2>Incorrect Answers:</h2>
-            <ul id="incorrect-list">
-                <!-- Incorrect answers will be listed here -->
-            </ul>
-        </div>
     </div>
 
     <!-- Game Script -->
@@ -277,13 +271,11 @@
 
         // Initialize Game
         function initGame() {
-            shuffledQuestions = shuffle([...doublesData]);
+            shuffledQuestions = shuffle([...doublesData]).slice(0,5);
             currentQuestionIndex = 0;
             score = 0;
             incorrectAnswers = [];
             document.getElementById('score').textContent = `Score: ${score}`;
-            document.getElementById('incorrect-answers').classList.add('hidden');
-            document.getElementById('incorrect-list').innerHTML = '';
             updateProgressBar();
             loadQuestion();
         }
@@ -331,8 +323,6 @@
             if (userAnswer === correctAnswer) {
                 feedbackDiv.textContent = 'Correct! Well done! 🎉';
                 feedbackDiv.style.color = '#4CAF50';
-                score++;
-                document.getElementById('score').textContent = `Score: ${score}`;
             } else {
                 feedbackDiv.textContent = `Incorrect. The correct answer was ${correctAnswer}.`;
                 feedbackDiv.style.color = '#f44336';
@@ -350,6 +340,12 @@
 
             // Show Next button
             document.getElementById('next-button').classList.remove('hidden');
+
+            // Update score if correct
+            if (userAnswer === correctAnswer) {
+                score++;
+                document.getElementById('score').textContent = `Score: ${score}`;
+            }
 
             updateProgressBar();
         }
@@ -374,17 +370,21 @@
         // End Game
         function endGame() {
             const gameContainer = document.getElementById('game-container');
-            gameContainer.innerHTML = `
-                <h1>Game Over!</h1>
-                <p>Your final score is: ${score} out of ${shuffledQuestions.length}</p>
-                ${incorrectAnswers.length > 0 ? `
+            let incorrectHTML = '';
+            if (incorrectAnswers.length > 0) {
+                incorrectHTML = `
                     <div id="incorrect-answers">
                         <h2>Incorrect Answers:</h2>
                         <ul id="incorrect-list">
                             ${incorrectAnswers.map(item => `<li>${item.equation.replace('____', `<strong>${item.yourAnswer}</strong>`)} <br> <em>Correct Answer: ${item.correctAnswer}</em></li>`).join('')}
                         </ul>
                     </div>
-                ` : ''}
+                `;
+            }
+            gameContainer.innerHTML = `
+                <h1>Game Over!</h1>
+                <p>Your final score is: ${score} out of ${shuffledQuestions.length}</p>
+                ${incorrectHTML}
                 <button onclick="initGame()" style="padding: 10px 20px; font-size: 18px; background-color: #c61190; color: white; border: none; border-radius: 5px; cursor: pointer;">Play Again</button>
             `;
         }

@@ -145,11 +145,11 @@
     <script>
         // Doubles Data with Equations
         const doublesData = [
-            { number: 0, addend: 0, result: 0, correctAnswer: '0' },
-            { number: 1, addend: 1, result: 2, correctAnswer: '1' },
-            { number: 2, addend: 2, result: 4, correctAnswer: '2' },
-            { number: 3, addend: 3, result: 6, correctAnswer: '3' },
-            { number: 4, addend: 4, result: 8, correctAnswer: '4' },
+            { number: 0, addend: 0, result: 0 },
+            { number: 1, addend: 1, result: 2 },
+            { number: 2, addend: 2, result: 4 },
+            { number: 3, addend: 3, result: 6 },
+            { number: 4, addend: 4, result: 8 },
         ];
 
         let shuffledQuestions = [];
@@ -197,10 +197,13 @@
             const equationType = Math.floor(Math.random() * 3);
             if (equationType === 0) {
                 equationHTML = `<input type="number" id="answer-input" class="answer-input" placeholder="__" value=""> + ${addend} = ${result}`;
+                currentData.correctAnswer = number;
             } else if (equationType === 1) {
                 equationHTML = `${number} + <input type="number" id="answer-input" class="answer-input" placeholder="__" value=""> = ${result}`;
+                currentData.correctAnswer = addend;
             } else {
                 equationHTML = `${number} + ${addend} = <input type="number" id="answer-input" class="answer-input" placeholder="__" value="">`;
+                currentData.correctAnswer = result;
             }
             equationSpan.innerHTML = equationHTML;
 
@@ -232,7 +235,7 @@
                 return;
             }
 
-            if (userAnswer === correctAnswer) {
+            if (parseInt(userAnswer) === correctAnswer) {
                 feedbackDiv.textContent = 'Correct! Well done! 🎉';
                 feedbackDiv.style.color = '#4CAF50';
                 score++;

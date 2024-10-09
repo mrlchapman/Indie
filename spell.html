@@ -20,13 +20,13 @@
         <div id="image-container">
             <img id="word-image" alt="Image representing the word" src="" width="200" height="200">
         </div>
-        <div id="answer-area"></div>
-        <div id="scrambled-letters"></div>
-        <!-- Added SVG tick icon -->
+        <!-- SVG Tick Icon -->
         <svg id="tick" viewBox="0 0 70 70">
             <circle cx="35" cy="35" r="34" fill="none" stroke="#c61190" stroke-width="2"/>
             <path d="M20 37 L30 47 L50 27" fill="none" stroke="#c61190" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000"/>
         </svg>
+        <div id="answer-area"></div>
+        <div id="scrambled-letters"></div>
         <div id="button-container">
             <button id="submit-button" onclick="checkAnswer()">Submit</button>
             <button id="next-button" class="hidden" onclick="nextWord()">Next</button>
@@ -35,13 +35,14 @@
         <div id="score">Score: 0</div>
     </div>
 
-    <!-- Include the shared game.js file -->
-    <script src="game.js"></script>
-    <!-- Include your game-specific script -->
+    <!-- Include the words array -->
+    <script src="words.js"></script>
+    
+    <!-- Game script -->
     <script>
         // Game logic
 
-        // Use the words array from game.js
+        // Use the words array from words.js
         let gameWords = shuffleArray(words);
         gameWords = gameWords.slice(0, 10); // Limit to 10 words
 
@@ -58,13 +59,15 @@
             const scrambled = shuffleArray(word.split(''));
 
             // Display image
-            document.getElementById('word-image').src = wordObj.image;
-            document.getElementById('word-image').alt = `Image of ${wordObj.word}`;
+            const wordImage = document.getElementById('word-image');
+            wordImage.src = wordObj.image;
+            wordImage.alt = `Image of ${wordObj.word}`;
 
             // Reset areas
             document.getElementById('answer-area').innerHTML = '';
             document.getElementById('scrambled-letters').innerHTML = '';
             document.getElementById('message').textContent = '';
+            document.getElementById('message').style.color = 'green'; // Reset message color
             document.getElementById('next-button').classList.add('hidden');
             document.getElementById('submit-button').classList.remove('hidden');
             document.getElementById('submit-button').disabled = false;
@@ -81,7 +84,7 @@
                 const tile = document.createElement('div');
                 tile.classList.add('answer-tile');
                 tile.dataset.index = i;
-                tile.onclick = () => deselectLetter(tile); // Add click event to deselect letter
+                tile.addEventListener('click', () => deselectLetter(tile)); // Add click event to deselect letter
                 document.getElementById('answer-area').appendChild(tile);
             }
 
@@ -91,7 +94,7 @@
                 tile.classList.add('letter-tile');
                 tile.textContent = scrambled[i];
                 tile.dataset.index = i; // Assign an index to each scrambled letter tile
-                tile.onclick = () => selectLetter(tile);
+                tile.addEventListener('click', () => selectLetter(tile));
                 document.getElementById('scrambled-letters').appendChild(tile);
             }
 
@@ -201,7 +204,7 @@
                 gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
             }
 
-            // Updated the "Play Again" button to match the other games' style
+            // Play Again button
             gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
         }
 

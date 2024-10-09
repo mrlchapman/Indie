@@ -1,5 +1,3 @@
-/* styles.css */
-
 /* Body styles */
 body {
     font-family: 'Arial', sans-serif;
@@ -44,7 +42,7 @@ body {
 /* Image Container */
 #image-container {
     width: 100%;
-    max-width: 200px;
+    max-width: 300px;
     height: 200px;
     margin: 0 auto 20px;
     border: 3px solid #c61190;
@@ -58,7 +56,7 @@ body {
 }
 
 /* Scrambled Letters and Answer Area */
-#scrambled-letters, #answer-area {
+#scrambled-letters, #scrambled-words, #answer-area {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -66,7 +64,7 @@ body {
     gap: 10px;
 }
 
-.letter-tile, .answer-tile {
+.letter-tile, .word-tile, .answer-tile, .empty-slot {
     font-size: 30px;
     width: 50px;
     height: 50px;
@@ -78,13 +76,13 @@ body {
     text-transform: lowercase;
 }
 
-.letter-tile {
+.letter-tile, .word-tile {
     background-color: #c61190;
     color: white;
     cursor: pointer;
 }
 
-.answer-tile {
+.answer-tile, .empty-slot {
     background-color: #ddd;
     color: #333;
 }
@@ -93,37 +91,40 @@ body {
 #button-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 10px; /* Space between buttons */
-    margin-bottom: 10px; /* Reduced space below the buttons */
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-/* Generic Button Styles */
-button {
-    font-size: 30px; /* Increased font size */
+#button-container button, button {
     padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+    font-size: 18px;
     background-color: #c61190;
     color: white;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
-button:hover {
+#button-container button:hover, button:hover {
     background-color: #a00f7b;
+}
+
+#button-container button.hidden {
+    display: none;
 }
 
 /* Specific Button Overrides */
 #submit-button, #next-button {
-    font-size: 18px; /* Original font size */
+    font-size: 18px;
 }
 
 /* Message */
 #message {
     font-size: 18px;
     margin-top: 10px;
-    min-height: 27px;
     color: green;
+    text-align: center;
+    min-height: 24px;
 }
 
 /* Score */
@@ -136,26 +137,22 @@ button:hover {
 
 /* Progress Bar */
 #progress-container {
-    width: 80%;
-    background-color: #ddd;
-    border-radius: 20px;
+    width: 100%;
+    background-color: #e0e0e0;
+    height: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
     overflow: hidden;
-    height: 20px;
-    margin: 10px auto;
 }
 #progress-bar {
+    width: 0%;
     height: 100%;
     background-color: #c61190;
-    width: 0%;
-}
-
-/* Hidden Class */
-.hidden {
-    display: none;
+    transition: width 0.3s;
 }
 
 /* Animated Tick */
-#tick {
+#tick-container, #tick {
     display: none;
     margin: 20px auto;
     width: 100px;
@@ -166,32 +163,58 @@ button:hover {
 }
 @keyframes tick-animation {
     0% {
-        stroke-dashoffset: 1000;
+        stroke-dashoffset: 100;
     }
     100% {
         stroke-dashoffset: 0;
     }
 }
 
+/* Tick SVG Styles */
+.tick-svg {
+    width: 100%;
+    height: 100%;
+}
+.tick-svg path {
+    stroke: #28a745;
+    stroke-width: 5;
+    fill: none;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 1s ease;
+}
+
 /* Result Table */
-table {
+table, #summary-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
-th, td {
+th, td, #summary-table th, #summary-table td {
     border: 1px solid #c61190;
     padding: 8px;
     text-align: center;
     text-transform: lowercase;
 }
-th {
+th, #summary-table th {
     background-color: #c61190;
     color: white;
     text-transform: capitalize; /* Capitalize headers */
 }
-#word-display {
-    font-size: 50px;
-    font-weight: bold;
-    margin-bottom: 20px;
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .word-tile, .letter-tile, .empty-slot {
+        font-size: 20px;
+        padding: 8px 12px;
+    }
+
+    #button-container button, button {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+
+    #score {
+        font-size: 20px;
+    }
 }

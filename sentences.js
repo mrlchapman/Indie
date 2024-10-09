@@ -39,7 +39,7 @@ let sentences = [
     },
     {
         image: 'https://img.freepik.com/premium-photo/cartoon-girl-walking-beach-with-seagulls-flying-around-generative-ai_1034986-5634.jpg',
-        words: ['She', 'walked', 'by', 'the', 'sea']
+        words: ['She', 'walks', 'by', 'the', 'sea']
     },
     {
         image: 'https://img.freepik.com/premium-vector/two-boys-go-school-through-park-road_43633-6301.jpg?w=360',

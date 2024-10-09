@@ -79,19 +79,27 @@ body {
     max-width: 100%; /* Ensure tiles can stretch for longer words */
     box-sizing: border-box; /* Include padding in width calculations */
     white-space: nowrap; /* Prevent wrapping of text */
+    overflow: hidden; /* Hide any overflowed text */
+    text-overflow: ellipsis; /* Add ellipsis if text is too long */
 }
 
-/* Specific styles for letter and word tiles */
+/* Adjusted Word Tile for Dynamic Sizing */
 .letter-tile, .word-tile {
     background-color: #c61190;
     color: white;
     cursor: pointer;
+    font-size: clamp(14px, 2vw, 24px); /* Font size adjusts based on screen size */
+    width: auto; /* Allow the width to adjust based on word length */
+    max-width: 100px; /* Limit max width so words don't stretch too much */
 }
 
 /* Styles for answer slots and empty slots */
 .answer-tile, .empty-slot {
     background-color: #ddd;
     color: #333;
+    min-width: 80px; /* Keep a consistent minimum width */
+    width: 80px;
+    height: 50px;
 }
 
 /* Button Container */

@@ -48,6 +48,7 @@ h1 {
 #question {
     font-size: 50px; /* Adjusted font size for the equation */
     margin-bottom: 20px;
+    padding: 8px 12px;
 }
 
 /* Progress Bar */
@@ -205,7 +206,7 @@ th, #summary-table th {
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    .word-tile, .empty-slot, input[type="number"], input[type="text"], #question {
+    .word-tile, .empty-slot, input[type="number"], input[type="text"] {
         font-size: 20px;
         padding: 8px 12px;
     }

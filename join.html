@@ -43,11 +43,11 @@
 
     <!-- Game script -->
     <script>
-        let gameSentences = shuffleArray(sentences).slice(0, 5);  // Select 5 random words
-        let currentSentenceIndex = 0;
-        let score = 0;
-        let totalSentences = sentences.length;
-        let incorrectSentences = []; // To store incorrect sentences
+            let gameSentences = shuffleArray(sentences).slice(0, 5);  // Select 5 random sentences
+            let currentSentenceIndex = 0;
+            let score = 0;
+            let totalSentences = gameSentences.length;  // Total number of selected random sentences
+            let incorrectSentences = []; // To store incorrect sentences
 
         // Shuffle the sentences to display them in random order
         shuffleArray(sentences);

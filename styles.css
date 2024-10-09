@@ -76,10 +76,10 @@ body {
     text-transform: lowercase;
     text-align: center;
     min-width: 80px; /* Set a minimum width to avoid shrinking too small */
-    max-width: 100%; /* Ensure tiles can stretch for longer words */
     box-sizing: border-box; /* Include padding in width calculations */
-    white-space: nowrap; /* Prevent wrapping of text */
-    overflow: hidden; /* Hide any overflowed text */
+    white-space: normal; /* Allow text to wrap */
+    overflow-wrap: anywhere; /* Break long words if necessary */
+    overflow: visible; /* Let content expand */
     text-overflow: ellipsis; /* Add ellipsis if text is too long */
 }
 
@@ -90,7 +90,7 @@ body {
     cursor: pointer;
     font-size: clamp(14px, 2vw, 24px); /* Font size adjusts based on screen size */
     width: auto; /* Allow the width to adjust based on word length */
-    max-width: 100px; /* Limit max width so words don't stretch too much */
+    /* Removed max-width to allow words to fit */
 }
 
 /* Styles for answer slots and empty slots */
@@ -98,7 +98,7 @@ body {
     background-color: #ddd;
     color: #333;
     min-width: 80px; /* Keep a consistent minimum width */
-    width: 80px;
+    width: auto; /* Allow width to adjust */
     height: 50px;
 }
 

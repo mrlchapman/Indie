@@ -43,80 +43,63 @@
 
     <!-- Game script -->
     <script>
-            let gameSentences = shuffleArray(sentences).slice(0, 5);  // Select 5 random sentences
-            let currentSentenceIndex = 0;
-            let score = 0;
-            let totalSentences = gameSentences.length = 5;  // Total number of selected random sentences
-            let incorrectSentences = []; // To store incorrect sentences
+                let gameSentences = shuffleArray(sentences).slice(0, 5);  // Select 5 random sentences
+    let currentSentenceIndex = 0;
+    let score = 0;
+    const totalSentences = gameSentences.length;
+    let incorrectSentences = []; // To store incorrect sentences
 
-        // Shuffle the sentences to display them in random order
-        shuffleArray(sentences);
+    // Start by displaying the first sentence
+    displaySentence();
 
-        displaySentence();
+    function displaySentence() {
+        const sentenceObj = gameSentences[currentSentenceIndex];
+        const sentence = sentenceObj.sentence.toLowerCase();
 
-        function displaySentence() {
-            const sentenceObj = sentences[currentSentenceIndex];
+        // Split the sentence into words and shuffle them
+        const scrambledWords = shuffleArray(sentence.split(' '));
 
-            // Use the provided words array as the correct order
-            sentenceObj.correctOrder = [...sentenceObj.words];
+        // Set the image for the sentence (if applicable)
+        document.getElementById('sentence-image').src = sentenceObj.image;
 
-            // Display image
-            document.getElementById('sentence-image').src = sentenceObj.image;
-            document.getElementById('sentence-image').alt = 'Image representing the sentence';
+        // Reset areas
+        document.getElementById('scrambled-words').innerHTML = '';
+        document.getElementById('answer-area').innerHTML = '';
+        document.getElementById('message').textContent = '';
+        document.getElementById('next-button').classList.add('hidden');
+        document.getElementById('submit-button').classList.remove('hidden');
+        document.getElementById('submit-button').disabled = false;
 
-            // Reset areas
-            document.getElementById('scrambled-words').innerHTML = '';
-            document.getElementById('answer-area').innerHTML = '';
-            document.getElementById('message').textContent = '';
-            document.getElementById('message').style.color = 'green'; // Reset message color
-            document.getElementById('next-button').classList.add('hidden');
-            document.getElementById('check-button').classList.remove('hidden');
-            document.getElementById('check-button').disabled = false;
+        // Hide and reset any animations or messages as needed
 
-            // Hide and reset tick animation
-            const tick = document.getElementById('tick');
-            tick.style.display = 'none';
-            const tickPath = tick.querySelector('path');
-            tickPath.classList.remove('tick-animate');
-            tickPath.style.strokeDashoffset = 1000;
+        // Create tiles for scrambled words
+        scrambledWords.forEach((word, index) => {
+            const tile = document.createElement('div');
+            tile.classList.add('word-tile');
+            tile.textContent = word;
+            tile.draggable = true;
+            tile.dataset.index = index;
 
-            // Shuffle words
-            const scrambledWords = shuffleArray(sentenceObj.words.slice());
+            // Drag and drop events
+            tile.addEventListener('dragstart', dragStart);
+            tile.addEventListener('click', function() { selectWord(tile); });
 
-            // Display scrambled words
-            scrambledWords.forEach((word) => {
-                const wordTile = document.createElement('div');
-                wordTile.classList.add('word-tile');
-                wordTile.textContent = word;
-                wordTile.draggable = true; // Make it draggable
-                wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
-                wordTile.addEventListener('dragstart', dragStart);
-                wordTile.addEventListener('dragend', dragEnd);
-                document.getElementById('scrambled-words').appendChild(wordTile);
-            });
+            document.getElementById('scrambled-words').appendChild(tile);
+        });
 
-            // Create empty slots in the answer area
-            const answerArea = document.getElementById('answer-area');
-            for (let i = 0; i < sentenceObj.words.length; i++) {
-                const slot = document.createElement('div');
-                slot.classList.add('empty-slot');
-                slot.dataset.index = i;
-                slot.addEventListener('click', slotClick); // Handle click to move word back up
-                // Add drag-and-drop events
-                slot.addEventListener('dragover', dragOver);
-                slot.addEventListener('drop', drop);
-                slot.addEventListener('dragleave', dragLeave);
-                answerArea.appendChild(slot);
-            }
+        // Create empty slots for the answer area
+        sentence.split(' ').forEach(() => {
+            const slot = document.createElement('div');
+            slot.classList.add('answer-tile');
+            slot.addEventListener('dragover', dragOver);
+            slot.addEventListener('drop', drop);
+            slot.addEventListener('click', function() { deselectWord(slot); });
+            document.getElementById('answer-area').appendChild(slot);
+        });
 
-            // Make scrambled words area accept dropped words
-            const scrambledWordsArea = document.getElementById('scrambled-words');
-            scrambledWordsArea.addEventListener('dragover', dragOver);
-            scrambledWordsArea.addEventListener('drop', drop);
-            scrambledWordsArea.addEventListener('dragleave', dragLeave);
+        updateProgressBar();
+    }
 
-            updateProgressBar();
-        }
 
         // Function to handle tapping on a word tile
         function wordTileClick(event) {

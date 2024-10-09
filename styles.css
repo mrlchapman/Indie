@@ -39,112 +39,25 @@ body {
     max-width: 600px;
 }
 
-/* Image Container */
-#image-container {
+/* Headings */
+h1 {
+    margin-top: 0;
+}
+
+/* Progress Bar */
+#progress-container {
     width: 100%;
-    max-width: 300px;
-    height: 200px;
-    margin: 0 auto 20px;
-    border: 3px solid #c61190;
-    border-radius: 10px;
+    background-color: #e0e0e0;
+    height: 20px;
+    margin: 10px auto;
+    border-radius: 20px;
     overflow: hidden;
 }
-#image-container img {
-    width: 100%;
+#progress-bar {
+    width: 0%;
     height: 100%;
-    object-fit: cover;
-}
-
-/* Scrambled Letters and Answer Area */
-#scrambled-letters, #scrambled-words, #answer-area {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 20px;
-    gap: 10px;
-}
-
-/* Combined styles for .letter-tile, .word-tile, .answer-tile, .empty-slot */
-.letter-tile, .word-tile, .answer-tile, .empty-slot {
-    font-size: 24px;  /* Adjusted font size for readability */
-    padding: 10px 15px; /* Increase padding for better spacing */
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    text-transform: lowercase;
-    text-align: center;
-    min-width: 80px; /* Set a minimum width to avoid shrinking too small */
-    box-sizing: border-box; /* Include padding in width calculations */
-    white-space: normal; /* Allow text to wrap */
-    overflow-wrap: anywhere; /* Break long words if necessary */
-    overflow: visible; /* Let content expand */
-    text-overflow: ellipsis; /* Add ellipsis if text is too long */
-}
-
-/* Adjusted Word Tile for Dynamic Sizing */
-.letter-tile, .word-tile {
     background-color: #c61190;
-    color: white;
-    cursor: pointer;
-    font-size: clamp(14px, 2vw, 24px); /* Font size adjusts based on screen size */
-    width: auto; /* Allow the width to adjust based on word length */
-    /* Removed max-width to allow words to fit */
-}
-
-/* Styles for answer slots and empty slots */
-.answer-tile, .empty-slot {
-    background-color: #ddd;
-    color: #333;
-    min-width: 80px; /* Keep a consistent minimum width */
-    width: auto; /* Allow width to adjust */
-    height: 50px;
-}
-
-/* Style for when an element is being dragged over a slot */
-.empty-slot.drag-over {
-    border: 2px dashed #c61190;
-}
-
-/* Button Container */
-#button-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-#button-container button, button {
-    padding: 10px 20px;
-    font-size: 18px;
-    background-color: #c61190;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-#button-container button:hover, button:hover {
-    background-color: #a00f7b;
-}
-
-#button-container button.hidden {
-    display: none;
-}
-
-/* Specific Button Overrides */
-#submit-button, #next-button {
-    font-size: 18px;
-}
-
-/* Message */
-#message {
-    font-size: 18px;
-    margin-top: 10px;
-    color: green;
-    text-align: center;
-    min-height: 24px;
+    transition: width 0.3s;
 }
 
 /* Score */
@@ -155,24 +68,44 @@ body {
     margin-top: 10px;
 }
 
-/* Progress Bar */
-#progress-container {
-    width: 100%;
-    background-color: #e0e0e0;
-    height: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    overflow: hidden;
-}
-#progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: #c61190;
-    transition: width 0.3s;
+/* Message */
+#message {
+    font-size: 18px;
+    margin-top: 10px;
+    min-height: 27px;
+    color: green; /* Default message color for positive feedback */
+    text-align: center;
 }
 
-/* Animated Tick */
-#tick-container, #tick {
+/* Button Styles */
+button {
+    font-size: 18px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #c61190;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+button:hover {
+    background-color: #a00f7b;
+}
+button.hidden {
+    display: none;
+}
+
+/* Input Styles */
+input[type="number"], input[type="text"] {
+    font-size: 24px;
+    padding: 5px;
+    width: 80px;
+    text-align: center;
+    margin-left: 10px;
+}
+
+/* Tick Animation Styles */
+#tick {
     display: none;
     margin: 20px auto;
     width: 100px;
@@ -183,28 +116,14 @@ body {
 }
 @keyframes tick-animation {
     0% {
-        stroke-dashoffset: 100;
+        stroke-dashoffset: 1000;
     }
     100% {
         stroke-dashoffset: 0;
     }
 }
 
-/* Tick SVG Styles */
-.tick-svg {
-    width: 100%;
-    height: 100%;
-}
-.tick-svg path {
-    stroke: #28a745;
-    stroke-width: 5;
-    fill: none;
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    transition: stroke-dashoffset 1s ease;
-}
-
-/* Result Table */
+/* Table Styles */
 table, #summary-table {
     width: 100%;
     border-collapse: collapse;
@@ -222,18 +141,72 @@ th, #summary-table th {
     text-transform: capitalize; /* Capitalize headers */
 }
 
+/* Specific Styles for Sentence Building Game */
+#image-container {
+    width: 100%;
+    max-width: 300px;
+    height: 200px;
+    margin: 0 auto 20px;
+    border: 3px solid #c61190;
+    border-radius: 10px;
+    overflow: hidden;
+}
+#image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+#scrambled-words, #answer-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+.word-tile, .empty-slot {
+    font-size: 24px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    text-transform: lowercase;
+    text-align: center;
+    min-width: 80px;
+    box-sizing: border-box;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    overflow: visible;
+    text-overflow: ellipsis;
+}
+.word-tile {
+    background-color: #c61190;
+    color: white;
+    cursor: pointer;
+    font-size: clamp(14px, 2vw, 24px);
+    width: auto;
+}
+.empty-slot {
+    background-color: #ddd;
+    color: #333;
+    width: auto;
+    height: 50px;
+}
+.empty-slot.drag-over {
+    border: 2px dashed #c61190;
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
-    .word-tile, .letter-tile, .empty-slot {
+    .word-tile, .empty-slot, input[type="number"], input[type="text"] {
         font-size: 20px;
         padding: 8px 12px;
     }
-
-    #button-container button, button {
+    button {
         font-size: 16px;
         padding: 8px 16px;
     }
-
     #score {
         font-size: 20px;
     }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Sentence Building Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link to the updated CSS file -->
+    <!-- Link to the shared stylesheet -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,6 +19,11 @@
         <div id="image-container">
             <img id="sentence-image" alt="Image representing the sentence" src="" width="300" height="200">
         </div>
+        <!-- Moved tick here to match the adding game -->
+        <svg id="tick" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="34" fill="none" stroke="#c61190" stroke-width="2"/>
+            <path d="M20 37 L30 47 L50 27" fill="none" stroke="#c61190" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+        </svg>
         <div id="scrambled-words">
             <!-- Scrambled words will appear here -->
         </div>
@@ -30,12 +35,6 @@
             <button id="next-button" class="hidden" onclick="nextSentence()">Next</button>
         </div>
         <div id="message"></div>
-        <div id="tick-container">
-            <!-- SVG Tick Animation -->
-            <svg class="tick-svg" viewBox="0 0 52 52">
-                <path d="M14 27 l7 7 l17-17" />
-            </svg>
-        </div>
         <div id="score">Score: 0</div>
     </div>
 
@@ -74,10 +73,11 @@
             document.getElementById('check-button').disabled = false;
 
             // Hide and reset tick animation
-            const tickContainer = document.getElementById('tick-container');
-            tickContainer.style.display = 'none';
-            const tickPath = document.querySelector('.tick-svg path');
-            tickPath.style.strokeDashoffset = 100;
+            const tick = document.getElementById('tick');
+            tick.style.display = 'none';
+            const tickPath = tick.querySelector('path');
+            tickPath.classList.remove('tick-animate');
+            tickPath.style.strokeDashoffset = 1000;
 
             // Shuffle words
             const scrambledWords = shuffleArray(sentenceObj.words.slice());
@@ -205,8 +205,8 @@
             const isCorrect = answerWords.join(' ') === sentenceObj.correctOrder.join(' ');
 
             const messageElement = document.getElementById('message');
-            const tickContainer = document.getElementById('tick-container');
-            const tickPath = document.querySelector('.tick-svg path');
+            const tick = document.getElementById('tick');
+            const tickPath = tick.querySelector('path');
 
             if (isCorrect) {
                 messageElement.textContent = 'Correct! Well done!';
@@ -215,11 +215,9 @@
                 document.getElementById('score').textContent = `Score: ${score}`;
                 
                 // Show and animate tick
-                tickContainer.style.display = 'block';
-                // Trigger reflow to restart animation
-                void tickPath.offsetWidth;
-                tickPath.style.strokeDashoffset = 0;
+                tick.style.display = 'block';
                 tickPath.classList.add('tick-animate');
+
             } else {
                 messageElement.textContent = 'Incorrect! 🙁';
                 messageElement.style.color = 'red';
@@ -247,47 +245,4 @@
             }
         }
 
-        // Function to end the game and display results
-        function endGame() {
-            // Display the sentences the user got wrong
-            const gameContainer = document.getElementById('game-container');
-            gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalSentences}</p>`;
-
-            if (incorrectSentences.length > 0) {
-                // Create a table to display incorrect answers
-                let resultHTML = `
-                    <h2>Review Your Incorrect Sentences:</h2>
-                    <table id="summary-table">
-                        <tr>
-                            <th>Image</th>
-                            <th>Correct Sentence</th>
-                            <th>Your Answer</th>
-                        </tr>
-                `;
-                incorrectSentences.forEach(item => {
-                    resultHTML += `
-                        <tr>
-                            <td><img src="${item.image}" alt="Sentence Image" width="100"></td>
-                            <td>${item.correctSentence}</td>
-                            <td>${item.yourAnswer || '(No answer)'}</td>
-                        </tr>
-                    `;
-                });
-                resultHTML += `</table>`;
-                gameContainer.innerHTML += resultHTML;
-            } else {
-                gameContainer.innerHTML += `<p>Excellent work! You got all sentences correct! 🎉</p>`;
-            }
-
-            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
-        }
-
-        // Function to update the progress bar
-        function updateProgressBar() {
-            const progressBar = document.getElementById('progress-bar');
-            const progressPercentage = ((currentSentenceIndex) / totalSentences) * 100;
-            progressBar.style.width = `${progressPercentage}%`;
-        }
-    </script>
-</body>
-</html>
+        // Function to​⬤

@@ -76,10 +76,20 @@ body {
     text-transform: lowercase;
 }
 
+/* Adjusted Word Tile for Dynamic Sizing */
 .letter-tile, .word-tile {
+    font-size: 24px;  /* Adjust font size if needed */
+    padding: 10px 15px; /* Increase padding for better spacing */
     background-color: #c61190;
     color: white;
     cursor: pointer;
+    display: inline-block; /* Keep tiles inline */
+    border-radius: 5px;
+    text-align: center;
+    min-width: 80px; /* Set a minimum width to avoid shrinking too small */
+    max-width: 100%; /* Ensure tiles can stretch for longer words */
+    box-sizing: border-box; /* Include padding in width calculations */
+    white-space: nowrap; /* Prevent wrapping of text */
 }
 
 .answer-tile, .empty-slot {

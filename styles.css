@@ -64,27 +64,16 @@ body {
     gap: 10px;
 }
 
+/* Combined styles for .letter-tile, .word-tile, .answer-tile, .empty-slot */
 .letter-tile, .word-tile, .answer-tile, .empty-slot {
-    font-size: 30px;
-    width: 50px;
-    height: 50px;
+    font-size: 24px;  /* Adjusted font size for readability */
+    padding: 10px 15px; /* Increase padding for better spacing */
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     user-select: none;
     text-transform: lowercase;
-}
-
-/* Adjusted Word Tile for Dynamic Sizing */
-.letter-tile, .word-tile {
-    font-size: 24px;  /* Adjust font size if needed */
-    padding: 10px 15px; /* Increase padding for better spacing */
-    background-color: #c61190;
-    color: white;
-    cursor: pointer;
-    display: inline-block; /* Keep tiles inline */
-    border-radius: 5px;
     text-align: center;
     min-width: 80px; /* Set a minimum width to avoid shrinking too small */
     max-width: 100%; /* Ensure tiles can stretch for longer words */
@@ -92,6 +81,14 @@ body {
     white-space: nowrap; /* Prevent wrapping of text */
 }
 
+/* Specific styles for letter and word tiles */
+.letter-tile, .word-tile {
+    background-color: #c61190;
+    color: white;
+    cursor: pointer;
+}
+
+/* Styles for answer slots and empty slots */
 .answer-tile, .empty-slot {
     background-color: #ddd;
     color: #333;

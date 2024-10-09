@@ -249,7 +249,7 @@ th, #summary-table th {
         font-size: 20px;
     }
 }
-.word-display {
+#word-display {
     font-size: 50px; /* Adjusted font size for the equation */
     margin-bottom: 20px;
     padding: 8px 12px;

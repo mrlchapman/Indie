@@ -43,6 +43,7 @@
 
     <!-- Game script -->
     <script>
+        let gameWords = shuffleArray(words).slice(0, 5);  // Select 5 random words
         let currentSentenceIndex = 0;
         let score = 0;
         let totalSentences = sentences.length;

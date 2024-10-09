@@ -35,14 +35,12 @@
         <div id="score">Score: 0</div>
     </div>
 
-    <!-- Include the words array -->
+    <!-- Include the words array from game.js -->
     <script src="game.js"></script>
 
-    <!-- Game script -->
+    <!-- Game logic -->
     <script>
-        // Game logic
-
-        // Use the words array from words.js
+        // Use the words array from game.js
         let gameWords = shuffleArray(words);
         gameWords = gameWords.slice(0, 10); // Limit to 10 words
 
@@ -216,6 +214,4 @@
             }
             return newArray;
         }
-    </script>
-</body>
-</html>
+    </script

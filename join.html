@@ -19,8 +19,8 @@
         <div id="image-container">
             <img id="sentence-image" alt="Image representing the sentence" src="" width="300" height="200">
         </div>
-        <!-- Moved tick here to match the adding game -->
-        <svg id="tick" viewBox="0 0 70 70">
+        <!-- Tick animation -->
+        <svg id="tick" viewBox="0 0 70 70" style="display: none;">
             <circle cx="35" cy="35" r="34" fill="none" stroke="#c61190" stroke-width="2"/>
             <path d="M20 37 L30 47 L50 27" fill="none" stroke="#c61190" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000"/>
         </svg>
@@ -43,120 +43,120 @@
 
     <!-- Game script -->
     <script>
-                let gameSentences = shuffleArray(sentences).slice(0, 5);  // Select 5 random sentences
-    let currentSentenceIndex = 0;
-    let score = 0;
-    const totalSentences = gameSentences.length;  // Now this will be 5
-    let incorrectSentences = []; // To store incorrect sentences
+        let gameSentences = shuffleArray(sentences).slice(0, 5);  // Select 5 random sentences
+        let currentSentenceIndex = 0;
+        let score = 0;
+        const totalSentences = gameSentences.length;  // Total will be 5 now
+        let incorrectSentences = []; // To store incorrect sentences
 
-    displaySentence();
+        // Shuffle the sentences and start the game
+        displaySentence();
 
-    function displaySentence() {
-        const sentenceObj = gameSentences[currentSentenceIndex];  // Use gameSentences here
+        function displaySentence() {
+            const sentenceObj = gameSentences[currentSentenceIndex];  // Use gameSentences here
 
-        // Use the provided words array as the correct order
-        sentenceObj.correctOrder = [...sentenceObj.words];
+            // Use the provided words array as the correct order
+            sentenceObj.correctOrder = [...sentenceObj.words];
 
-        // Display image
-        document.getElementById('sentence-image').src = sentenceObj.image;
-        document.getElementById('sentence-image').alt = 'Image representing the sentence';
+            // Display image
+            document.getElementById('sentence-image').src = sentenceObj.image;
+            document.getElementById('sentence-image').alt = 'Image representing the sentence';
 
-        // Reset areas
-        document.getElementById('scrambled-words').innerHTML = '';
-        document.getElementById('answer-area').innerHTML = '';
-        document.getElementById('message').textContent = '';
-        document.getElementById('message').style.color = 'green'; // Reset message color
-        document.getElementById('next-button').classList.add('hidden');
-        document.getElementById('check-button').classList.remove('hidden');
-        document.getElementById('check-button').disabled = false;
+            // Reset areas
+            document.getElementById('scrambled-words').innerHTML = '';
+            document.getElementById('answer-area').innerHTML = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('message').style.color = 'green'; // Reset message color
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('check-button').classList.remove('hidden');
+            document.getElementById('check-button').disabled = false;
 
-        // Hide and reset tick animation
-        const tick = document.getElementById('tick');
-        tick.style.display = 'none';
-        const tickPath = tick.querySelector('path');
-        tickPath.classList.remove('tick-animate');
-        tickPath.style.strokeDashoffset = 1000;
+            // Hide and reset tick animation
+            const tick = document.getElementById('tick');
+            tick.style.display = 'none';
+            const tickPath = tick.querySelector('path');
+            tickPath.classList.remove('tick-animate');
+            tickPath.style.strokeDashoffset = 1000;
 
-        // Shuffle words
-        const scrambledWords = shuffleArray(sentenceObj.words.slice());
+            // Shuffle words
+            const scrambledWords = shuffleArray(sentenceObj.words.slice());
 
-        // Display scrambled words
-        scrambledWords.forEach((word) => {
-            const wordTile = document.createElement('div');
-            wordTile.classList.add('word-tile');
-            wordTile.textContent = word;
-            wordTile.draggable = true; // Make it draggable
-            wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
-            wordTile.addEventListener('dragstart', dragStart);
-            wordTile.addEventListener('dragend', dragEnd);
-            document.getElementById('scrambled-words').appendChild(wordTile);
-        });
-
-        // Create empty slots in the answer area
-        const answerArea = document.getElementById('answer-area');
-        for (let i = 0; i < sentenceObj.words.length; i++) {
-            const slot = document.createElement('div');
-            slot.classList.add('empty-slot');
-            slot.dataset.index = i;
-            slot.addEventListener('click', slotClick); // Handle click to move word back up
-            // Add drag-and-drop events
-            slot.addEventListener('dragover', dragOver);
-            slot.addEventListener('drop', drop);
-            slot.addEventListener('dragleave', dragLeave);
-            answerArea.appendChild(slot);
-        }
-
-        updateProgressBar();
-    }
-
-    function checkSentence() {
-        const sentenceObj = gameSentences[currentSentenceIndex];  // Use gameSentences here
-        const answerWords = Array.from(document.querySelectorAll('.empty-slot')).map(slot => slot.firstChild ? slot.firstChild.textContent : '');
-
-        // Compare answerWords with sentenceObj.correctOrder
-        const isCorrect = answerWords.join(' ') === sentenceObj.correctOrder.join(' ');
-
-        const messageElement = document.getElementById('message');
-        const tick = document.getElementById('tick');
-        const tickPath = tick.querySelector('path');
-
-        if (isCorrect) {
-            messageElement.textContent = 'Correct! Well done!';
-            messageElement.style.color = 'green';
-            score++;
-            document.getElementById('score').textContent = `Score: ${score}`;
-            
-            // Show and animate tick
-            tick.style.display = 'block';
-            tickPath.classList.add('tick-animate');
-
-        } else {
-            messageElement.textContent = 'Incorrect! 🙁';
-            messageElement.style.color = 'red';
-            // Store the incorrect sentence
-            incorrectSentences.push({
-                image: sentenceObj.image,
-                correctSentence: sentenceObj.correctOrder.join(' '),
-                yourAnswer: answerWords.join(' ')
+            // Display scrambled words
+            scrambledWords.forEach((word) => {
+                const wordTile = document.createElement('div');
+                wordTile.classList.add('word-tile');
+                wordTile.textContent = word;
+                wordTile.draggable = true; // Make it draggable
+                wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
+                wordTile.addEventListener('dragstart', dragStart);
+                wordTile.addEventListener('dragend', dragEnd);
+                document.getElementById('scrambled-words').appendChild(wordTile);
             });
+
+            // Create empty slots in the answer area
+            const answerArea = document.getElementById('answer-area');
+            for (let i = 0; i < sentenceObj.words.length; i++) {
+                const slot = document.createElement('div');
+                slot.classList.add('empty-slot');
+                slot.dataset.index = i;
+                slot.addEventListener('click', slotClick); // Handle click to move word back up
+                // Add drag-and-drop events
+                slot.addEventListener('dragover', dragOver);
+                slot.addEventListener('drop', drop);
+                slot.addEventListener('dragleave', dragLeave);
+                answerArea.appendChild(slot);
+            }
+
+            updateProgressBar();
         }
 
-        // Disable and hide check button after first attempt
-        document.getElementById('check-button').disabled = true;
-        document.getElementById('check-button').classList.add('hidden');
-        document.getElementById('next-button').classList.remove('hidden');
-    }
+        function checkSentence() {
+            const sentenceObj = gameSentences[currentSentenceIndex];  // Use gameSentences here
+            const answerWords = Array.from(document.querySelectorAll('.empty-slot')).map(slot => slot.firstChild ? slot.firstChild.textContent : '');
 
-    function nextSentence() {
-        currentSentenceIndex++;
-        if (currentSentenceIndex < totalSentences) {  // Use totalSentences here
-            displaySentence();
-        } else {
-            endGame();
+            // Compare answerWords with sentenceObj.correctOrder
+            const isCorrect = answerWords.join(' ') === sentenceObj.correctOrder.join(' ');
+
+            const messageElement = document.getElementById('message');
+            const tick = document.getElementById('tick');
+            const tickPath = tick.querySelector('path');
+
+            if (isCorrect) {
+                messageElement.textContent = 'Correct! Well done!';
+                messageElement.style.color = 'green';
+                score++;
+                document.getElementById('score').textContent = `Score: ${score}`;
+                
+                // Show and animate tick
+                tick.style.display = 'block';
+                tickPath.classList.add('tick-animate');
+
+            } else {
+                messageElement.textContent = 'Incorrect! 🙁';
+                messageElement.style.color = 'red';
+                // Store the incorrect sentence
+                incorrectSentences.push({
+                    image: sentenceObj.image,
+                    correctSentence: sentenceObj.correctOrder.join(' '),
+                    yourAnswer: answerWords.join(' ')
+                });
+            }
+
+            // Disable and hide check button after first attempt
+            document.getElementById('check-button').disabled = true;
+            document.getElementById('check-button').classList.add('hidden');
+            document.getElementById('next-button').classList.remove('hidden');
         }
-    }
 
-        // Function to end the game and display results
+        function nextSentence() {
+            currentSentenceIndex++;
+            if (currentSentenceIndex < totalSentences) {  // Use totalSentences here
+                displaySentence();
+            } else {
+                endGame();
+            }
+        }
+
         function endGame() {
             // Display the sentences the user got wrong
             const gameContainer = document.getElementById('game-container');
@@ -191,11 +191,89 @@
             gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
         }
 
-        // Function to update the progress bar
         function updateProgressBar() {
             const progressBar = document.getElementById('progress-bar');
             const progressPercentage = ((currentSentenceIndex) / totalSentences) * 100;
             progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        // Shuffle function
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Drag and Drop Functions
+        let draggedItem = null;
+
+        function dragStart(event) {
+            draggedItem = event.target;
+            event.dataTransfer.setData('text/plain', '');
+            setTimeout(() => {
+                // Hide the element during drag
+                event.target.style.visibility = 'hidden';
+            }, 0);
+        }
+
+        function dragEnd(event) {
+            // Show the element after drag
+            event.target.style.visibility = 'visible';
+            draggedItem = null;
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+            if (event.currentTarget.classList.contains('empty-slot') && !event.currentTarget.firstChild) {
+                event.currentTarget.classList.add('drag-over');
+            }
+        }
+
+        function dragLeave(event) {
+            if (event.currentTarget.classList.contains('empty-slot')) {
+                event.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            if (draggedItem) {
+                const target = event.currentTarget;
+                if (target.classList.contains('empty-slot') && !target.firstChild) {
+                    target.appendChild(draggedItem);
+                } else if (target.id === 'scrambled-words' && draggedItem.parentElement !== target) {
+                    target.appendChild(draggedItem);
+                }
+                // Remove drag-over class
+                if (target.classList.contains('empty-slot')) {
+                    target.classList.remove('drag-over');
+                }
+            }
+        }
+
+        // Function to handle tapping on a word tile
+        function wordTileClick(event) {
+            const wordTile = event.target;
+            const parent = wordTile.parentElement;
+
+            // If the wordTile is in the scrambled-words area
+            if (parent && parent.id === 'scrambled-words') {
+                const emptySlot = Array.from(document.querySelectorAll('.empty-slot')).find(slot => !slot.firstChild);
+                if (emptySlot) {
+                    emptySlot.appendChild(wordTile);
+                }
+            }
+        }
+
+        // Function to handle tapping on an empty slot to remove the word
+        function slotClick(event) {
+            const slot = event.currentTarget;
+            if (slot.firstChild) {
+                const wordTile = slot.firstChild;
+                document.getElementById('scrambled-words').appendChild(wordTile);
+            }
         }
     </script>
 </body>

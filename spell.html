@@ -85,21 +85,29 @@
             tickPath.style.strokeDashoffset = 1000;
 
             // Create tiles for scrambled letters
-            for (let i = 0; i < scrambled.length; i++) {
+            scrambled.forEach((letter, index) => {
                 const tile = document.createElement('div');
                 tile.classList.add('letter-tile');
-                tile.textContent = scrambled[i];
-                tile.dataset.index = i; // Assign an index to each scrambled letter tile
+                tile.textContent = letter;
+                tile.draggable = true;
+                tile.dataset.index = index;
+
+                // Drag and drop events
+                tile.addEventListener('dragstart', dragStart);
                 tile.addEventListener('click', function() { selectLetter(tile); });
+
                 document.getElementById('scrambled-letters').appendChild(tile);
-            }
+            });
 
             // Create empty tiles for the answer area
-            for (let i = 0; i < word.length; i++) {
+            word.split('').forEach(() => {
                 const slot = document.createElement('div');
                 slot.classList.add('answer-tile');
+                slot.addEventListener('dragover', dragOver);
+                slot.addEventListener('drop', drop);
+                slot.addEventListener('click', function() { deselectLetter(slot); });
                 document.getElementById('answer-area').appendChild(slot);
-            }
+            });
 
             updateProgressBar();
         }
@@ -112,6 +120,32 @@
                 emptySlot.dataset.index = tile.dataset.index;
                 tile.style.visibility = 'hidden';
             }
+        }
+
+        function deselectLetter(slot) {
+            if (slot.dataset.letter) {
+                const index = slot.dataset.index;
+                const tile = document.querySelector(`.letter-tile[data-index="${index}"]`);
+                tile.style.visibility = 'visible';
+
+                slot.textContent = '';
+                delete slot.dataset.letter;
+                delete slot.dataset.index;
+            }
+        }
+
+        function dragStart(event) {
+            event.dataTransfer.setData('text', event.target.dataset.index);
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            const index = event.dataTransfer.getData('text');
+            const tile = document.querySelector(`.letter-tile[data-index="${index}"]`);
+            selectLetter(tile);
         }
 
         function checkAnswer() {

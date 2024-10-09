@@ -87,7 +87,10 @@
                 const wordTile = document.createElement('div');
                 wordTile.classList.add('word-tile');
                 wordTile.textContent = word;
+                wordTile.draggable = true; // Make it draggable
                 wordTile.addEventListener('click', wordTileClick); // Handle tap to move to next slot
+                wordTile.addEventListener('dragstart', dragStart);
+                wordTile.addEventListener('dragend', dragEnd);
                 document.getElementById('scrambled-words').appendChild(wordTile);
             });
 
@@ -98,8 +101,18 @@
                 slot.classList.add('empty-slot');
                 slot.dataset.index = i;
                 slot.addEventListener('click', slotClick); // Handle click to move word back up
+                // Add drag-and-drop events
+                slot.addEventListener('dragover', dragOver);
+                slot.addEventListener('drop', drop);
+                slot.addEventListener('dragleave', dragLeave);
                 answerArea.appendChild(slot);
             }
+
+            // Make scrambled words area accept dropped words
+            const scrambledWordsArea = document.getElementById('scrambled-words');
+            scrambledWordsArea.addEventListener('dragover', dragOver);
+            scrambledWordsArea.addEventListener('drop', drop);
+            scrambledWordsArea.addEventListener('dragleave', dragLeave);
 
             updateProgressBar();
         }
@@ -134,6 +147,53 @@
                 [array[i], array[j]] = [array[j], array[i]];
             }
             return array;
+        }
+
+        // Drag and Drop Functions
+        let draggedItem = null;
+
+        function dragStart(event) {
+            draggedItem = event.target;
+            event.dataTransfer.setData('text/plain', '');
+            setTimeout(() => {
+                // Hide the element during drag
+                event.target.style.visibility = 'hidden';
+            }, 0);
+        }
+
+        function dragEnd(event) {
+            // Show the element after drag
+            event.target.style.visibility = 'visible';
+            draggedItem = null;
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+            if (event.currentTarget.classList.contains('empty-slot') && !event.currentTarget.firstChild) {
+                event.currentTarget.classList.add('drag-over');
+            }
+        }
+
+        function dragLeave(event) {
+            if (event.currentTarget.classList.contains('empty-slot')) {
+                event.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            if (draggedItem) {
+                const target = event.currentTarget;
+                if (target.classList.contains('empty-slot') && !target.firstChild) {
+                    target.appendChild(draggedItem);
+                } else if (target.id === 'scrambled-words' && draggedItem.parentElement !== target) {
+                    target.appendChild(draggedItem);
+                }
+                // Remove drag-over class
+                if (target.classList.contains('empty-slot')) {
+                    target.classList.remove('drag-over');
+                }
+            }
         }
 
         // Function to check the sentence

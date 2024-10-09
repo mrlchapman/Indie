@@ -102,6 +102,11 @@ body {
     height: 50px;
 }
 
+/* Style for when an element is being dragged over a slot */
+.empty-slot.drag-over {
+    border: 2px dashed #c61190;
+}
+
 /* Button Container */
 #button-container {
     display: flex;

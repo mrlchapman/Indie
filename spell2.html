@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Arla's Spelling Game</title>
-    <!-- Include viewport meta tag for mobile responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link to the shared styles.css file -->
+    <!-- Link to the shared stylesheet -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,56 +13,65 @@
 
     <div id="game-container">
         <h1>Arla's Spelling Game</h1>
+
+        <!-- Progress Bar -->
         <div id="progress-container">
             <div id="progress-bar"></div>
         </div>
+
+        <!-- Image for the word -->
         <div id="image-container">
             <img id="word-image" alt="Image representing the word" src="" width="200" height="200">
         </div>
-        <div id="answer-area"></div>
-        <div id="scrambled-letters"></div>
-        <!-- Added SVG tick icon -->
-        <svg id="tick" viewBox="0 0 70 70">
+
+        <!-- Tick animation -->
+        <svg id="tick" viewBox="0 0 70 70" style="display: none;">
             <circle cx="35" cy="35" r="34" fill="none" stroke="#c61190" stroke-width="2"/>
             <path d="M20 37 L30 47 L50 27" fill="none" stroke="#c61190" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000"/>
         </svg>
+
+        <!-- Area for the scrambled letters -->
+        <div id="scrambled-letters"></div>
+
+        <!-- Area for the answer -->
+        <div id="answer-area"></div>
+
+        <!-- Submit and Next buttons -->
         <div id="button-container">
             <button id="submit-button" onclick="checkAnswer()">Submit</button>
             <button id="next-button" class="hidden" onclick="nextWord()">Next</button>
         </div>
+
+        <!-- Message for feedback -->
         <div id="message"></div>
+
+        <!-- Score Display -->
         <div id="score">Score: 0</div>
     </div>
 
-    <!-- Include the shared game.js file -->
+    <!-- Game logic -->
     <script src="arla.js"></script>
-    <!-- Include your game-specific script -->
     <script>
-        // Game logic
-
-        // Use the words array from game.js
-        let gameWords = shuffleArray(words);
-        gameWords = gameWords.slice(0, 5); // Limit to 5 words
-
+        let gameWords = shuffleArray(words).slice(0, 5);  // Select 5 random words
         let currentWordIndex = 0;
         let score = 0;
-        let totalQuestions = gameWords.length;
-        let incorrectAnswers = []; // Array to store incorrect answers
+        const totalQuestions = gameWords.length;
+        let incorrectAnswers = [];
 
-        displayWord(); // Initial call to display the first word
+        // Start by displaying the first word
+        displayWord();
 
         function displayWord() {
             const wordObj = gameWords[currentWordIndex];
             const word = wordObj.word.toLowerCase();
             const scrambled = shuffleArray(word.split(''));
 
-            // Display image
+            // Set the image for the word
             document.getElementById('word-image').src = wordObj.image;
-            document.getElementById('word-image').alt = `Image of ${wordObj.word}`;
 
             // Reset areas
-            document.getElementById('answer-area').innerHTML = '';
             document.getElementById('scrambled-letters').innerHTML = '';
+            document.getElementById('answer-area').innerHTML = '';
             document.getElementById('message').textContent = '';
             document.getElementById('next-button').classList.add('hidden');
             document.getElementById('submit-button').classList.remove('hidden');
@@ -76,48 +84,68 @@
             tickPath.classList.remove('tick-animate');
             tickPath.style.strokeDashoffset = 1000;
 
-            // Create answer tiles
-            for (let i = 0; i < word.length; i++) {
-                const tile = document.createElement('div');
-                tile.classList.add('answer-tile');
-                tile.dataset.index = i;
-                tile.onclick = () => deselectLetter(tile); // Add click event to deselect letter
-                document.getElementById('answer-area').appendChild(tile);
-            }
-
-            // Create scrambled letter tiles
-            for (let i = 0; i < scrambled.length; i++) {
+            // Create tiles for scrambled letters
+            scrambled.forEach((letter, index) => {
                 const tile = document.createElement('div');
                 tile.classList.add('letter-tile');
-                tile.textContent = scrambled[i];
-                tile.dataset.index = i; // Assign an index to each scrambled letter tile
-                tile.onclick = () => selectLetter(tile);
+                tile.textContent = letter;
+                tile.draggable = true;
+                tile.dataset.index = index;
+
+                // Drag and drop events
+                tile.addEventListener('dragstart', dragStart);
+                tile.addEventListener('click', function() { selectLetter(tile); });
+
                 document.getElementById('scrambled-letters').appendChild(tile);
-            }
+            });
+
+            // Create empty tiles for the answer area
+            word.split('').forEach(() => {
+                const slot = document.createElement('div');
+                slot.classList.add('answer-tile');
+                slot.addEventListener('dragover', dragOver);
+                slot.addEventListener('drop', drop);
+                slot.addEventListener('click', function() { deselectLetter(slot); });
+                document.getElementById('answer-area').appendChild(slot);
+            });
 
             updateProgressBar();
         }
 
         function selectLetter(tile) {
-            const emptyTile = document.querySelector('.answer-tile:not([data-letter])');
-            if (emptyTile) {
-                emptyTile.textContent = tile.textContent;
-                emptyTile.dataset.letter = tile.textContent;
-                emptyTile.dataset.scrambledIndex = tile.dataset.index; // Store the index to reference scrambled letter
-                tile.style.visibility = 'hidden'; // Hide the selected letter in the scrambled section
+            const emptySlot = document.querySelector('.answer-tile:not([data-letter])');
+            if (emptySlot) {
+                emptySlot.textContent = tile.textContent;
+                emptySlot.dataset.letter = tile.textContent;
+                emptySlot.dataset.index = tile.dataset.index;
+                tile.style.visibility = 'hidden';
             }
         }
 
-        function deselectLetter(tile) {
-            if (tile.dataset.letter) { // Only act if a letter has been selected
-                const scrambledIndex = tile.dataset.scrambledIndex; // Get the original scrambled letter index
-                const scrambledTile = document.querySelector(`.letter-tile[data-index="${scrambledIndex}"]`);
-                scrambledTile.style.visibility = 'visible'; // Make the original letter visible again
+        function deselectLetter(slot) {
+            if (slot.dataset.letter) {
+                const index = slot.dataset.index;
+                const tile = document.querySelector(`.letter-tile[data-index="${index}"]`);
+                tile.style.visibility = 'visible';
 
-                tile.textContent = ''; // Clear the answer tile
-                delete tile.dataset.letter; // Remove the letter from the tile's dataset
-                delete tile.dataset.scrambledIndex; // Remove the reference to the scrambled letter
+                slot.textContent = '';
+                delete slot.dataset.letter;
+                delete slot.dataset.index;
             }
+        }
+
+        function dragStart(event) {
+            event.dataTransfer.setData('text', event.target.dataset.index);
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            const index = event.dataTransfer.getData('text');
+            const tile = document.querySelector(`.letter-tile[data-index="${index}"]`);
+            selectLetter(tile);
         }
 
         function checkAnswer() {
@@ -126,33 +154,33 @@
             const userAnswer = Array.from(document.querySelectorAll('.answer-tile'))
                 .map(tile => tile.dataset.letter || '')
                 .join('');
-            const message = document.getElementById('message');
 
-            document.getElementById('submit-button').disabled = true;
-            document.getElementById('submit-button').classList.add('hidden');
+            const message = document.getElementById('message');
+            const tick = document.getElementById('tick');
 
             if (userAnswer === word) {
                 score++;
-                message.textContent = 'Correct! Well done! 🎉';
+                message.textContent = 'Correct! Well done!';
                 message.style.color = 'green';
 
                 // Show and animate the tick
-                const tick = document.getElementById('tick');
                 tick.style.display = 'block';
                 const tickPath = tick.querySelector('path');
                 tickPath.classList.add('tick-animate');
+                tickPath.style.strokeDashoffset = 0;
 
             } else {
-                message.textContent = `Oops! The correct spelling is '${word}'. 🙁`;
+                message.textContent = `Incorrect! The correct spelling is '${word}'.`;
                 message.style.color = 'red';
-                // Store the incorrect answer
                 incorrectAnswers.push({
                     word: word,
-                    userAnswer: userAnswer
+                    userAnswer: userAnswer,
+                    image: wordObj.image
                 });
             }
 
             document.getElementById('score').textContent = `Score: ${score}`;
+            document.getElementById('submit-button').classList.add('hidden');
             document.getElementById('next-button').classList.remove('hidden');
         }
 
@@ -176,42 +204,29 @@
             gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalQuestions}</p>`;
 
             if (incorrectAnswers.length > 0) {
-                // Create a table to display incorrect answers
                 let resultHTML = `
                     <h2>Review Your Incorrect Answers:</h2>
                     <table>
-                        <tr>
-                            <th>Word</th>
-                            <th>Your Answer</th>
-                            <th>Correct Spelling</th>
-                        </tr>
+                        <tr><th>Word</th><th>Your Answer</th><th>Correct Answer</th></tr>
                 `;
                 incorrectAnswers.forEach(item => {
-                    resultHTML += `
-                        <tr>
-                            <td>${item.word}</td>
-                            <td>${item.userAnswer}</td>
-                            <td>${item.word}</td>
-                        </tr>
-                    `;
+                    resultHTML += `<tr><td><img src="${item.image}" alt="Image" width="50"></td><td>${item.userAnswer}</td><td>${item.word}</td></tr>`;
                 });
-                resultHTML += `</table>`;
+                resultHTML += '</table>';
                 gameContainer.innerHTML += resultHTML;
             } else {
                 gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
             }
 
-            // Updated the "Play Again" button to match the other games' style
             gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
         }
 
         function shuffleArray(array) {
-            const newArray = array.slice();
-            for (let i = newArray.length - 1; i > 0; i--) {
+            for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                [array[i], array[j]] = [array[j], array[i]];
             }
-            return newArray;
+            return array;
         }
     </script>
 </body>

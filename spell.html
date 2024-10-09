@@ -37,7 +37,7 @@
 
     <!-- Include the words array -->
     <script src="words.js"></script>
-    
+
     <!-- Game script -->
     <script>
         // Game logic
@@ -84,7 +84,7 @@
                 const tile = document.createElement('div');
                 tile.classList.add('answer-tile');
                 tile.dataset.index = i;
-                tile.addEventListener('click', () => deselectLetter(tile)); // Add click event to deselect letter
+                tile.addEventListener('click', function() { deselectLetter(tile); }); // Add click event to deselect letter
                 document.getElementById('answer-area').appendChild(tile);
             }
 
@@ -94,7 +94,7 @@
                 tile.classList.add('letter-tile');
                 tile.textContent = scrambled[i];
                 tile.dataset.index = i; // Assign an index to each scrambled letter tile
-                tile.addEventListener('click', () => selectLetter(tile));
+                tile.addEventListener('click', function() { selectLetter(tile); });
                 document.getElementById('scrambled-letters').appendChild(tile);
             }
 

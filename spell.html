@@ -24,6 +24,12 @@
             <img id="word-image" alt="Image representing the word" src="" width="200" height="200">
         </div>
 
+        <!-- Tick animation -->
+        <svg id="tick" viewBox="0 0 70 70" style="display: none;">
+            <circle cx="35" cy="35" r="34" fill="none" stroke="#c61190" stroke-width="2"/>
+            <path d="M20 37 L30 47 L50 27" fill="none" stroke="#c61190" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+        </svg>
+
         <!-- Area for the scrambled letters -->
         <div id="scrambled-letters"></div>
 
@@ -46,16 +52,17 @@
     <!-- Game logic -->
     <script src="game.js"></script>
     <script>
+        let gameWords = shuffleArray(words).slice(0, 5);  // Select 5 random words
         let currentWordIndex = 0;
         let score = 0;
-        const totalQuestions = words.length;
-        let incorrectAnswers = []; // Array to store incorrect answers
+        const totalQuestions = gameWords.length;
+        let incorrectAnswers = [];
 
         // Start by displaying the first word
         displayWord();
 
         function displayWord() {
-            const wordObj = words[currentWordIndex];
+            const wordObj = gameWords[currentWordIndex];
             const word = wordObj.word.toLowerCase();
             const scrambled = shuffleArray(word.split(''));
 
@@ -69,6 +76,13 @@
             document.getElementById('next-button').classList.add('hidden');
             document.getElementById('submit-button').classList.remove('hidden');
             document.getElementById('submit-button').disabled = false;
+
+            // Hide and reset the tick animation
+            const tick = document.getElementById('tick');
+            tick.style.display = 'none';
+            const tickPath = tick.querySelector('path');
+            tickPath.classList.remove('tick-animate');
+            tickPath.style.strokeDashoffset = 1000;
 
             // Create tiles for scrambled letters
             for (let i = 0; i < scrambled.length; i++) {
@@ -101,23 +115,33 @@
         }
 
         function checkAnswer() {
-            const wordObj = words[currentWordIndex];
+            const wordObj = gameWords[currentWordIndex];
             const word = wordObj.word.toLowerCase();
             const userAnswer = Array.from(document.querySelectorAll('.answer-tile'))
                 .map(tile => tile.dataset.letter || '')
                 .join('');
 
             const message = document.getElementById('message');
+            const tick = document.getElementById('tick');
+
             if (userAnswer === word) {
                 score++;
                 message.textContent = 'Correct! Well done!';
                 message.style.color = 'green';
+
+                // Show and animate the tick
+                tick.style.display = 'block';
+                const tickPath = tick.querySelector('path');
+                tickPath.classList.add('tick-animate');
+                tickPath.style.strokeDashoffset = 0;
+
             } else {
                 message.textContent = `Incorrect! The correct spelling is '${word}'.`;
                 message.style.color = 'red';
                 incorrectAnswers.push({
                     word: word,
-                    userAnswer: userAnswer
+                    userAnswer: userAnswer,
+                    image: wordObj.image
                 });
             }
 
@@ -128,7 +152,7 @@
 
         function nextWord() {
             currentWordIndex++;
-            if (currentWordIndex < words.length) {
+            if (currentWordIndex < totalQuestions) {
                 displayWord();
             } else {
                 endGame();
@@ -152,7 +176,7 @@
                         <tr><th>Word</th><th>Your Answer</th><th>Correct Answer</th></tr>
                 `;
                 incorrectAnswers.forEach(item => {
-                    resultHTML += `<tr><td>${item.word}</td><td>${item.userAnswer}</td><td>${item.word}</td></tr>`;
+                    resultHTML += `<tr><td><img src="${item.image}" alt="Image" width="50"></td><td>${item.userAnswer}</td><td>${item.word}</td></tr>`;
                 });
                 resultHTML += '</table>';
                 gameContainer.innerHTML += resultHTML;

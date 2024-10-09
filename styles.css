@@ -250,7 +250,9 @@ th, #summary-table th {
     }
 }
 #word-display {
-    font-size: 50px; /* Adjusted font size for the equation */
-    margin-bottom: 20px;
-    padding: 8px 12px;
+    font-size: 3rem; /* Increase the font size */
+    font-weight: bold; /* Make the text bold */
+    text-align: center; /* Center the text horizontally */
+    margin: 20px 0; /* Add some space around the word */
+    color: #333; /* Change the text colour (optional) */
 }

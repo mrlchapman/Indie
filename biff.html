@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Arla's Biff and Chip Character Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Added for mobile responsiveness -->
-    <style> <link rel="stylesheet" href="styles.css"> </style>
-        
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Back to Games Button -->
@@ -28,7 +27,7 @@
             <button onclick="checkAnswer('Chip')">Chip</button>
         </div>
         <div id="message"></div>
-        <button id="next-button" class="hidden" onclick="nextCharacter()">Next</button>
+        <button id="next-button" class="button.hidden" onclick="nextCharacter()">Next</button>
         <div id="score">Score: 0</div>
     </div>
 
@@ -57,7 +56,7 @@
             document.getElementById('word-image').src = characterObj.image;
             document.getElementById('word-image').alt = `Image of ${characterObj.name}`;
             document.getElementById('message').textContent = '';
-            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('next-button').classList.add('button.hidden');
             enableAnswerButtons(true);
             updateProgressBar();
         }
@@ -84,7 +83,7 @@
             }
 
             document.getElementById('score').textContent = `Score: ${score}`;
-            nextButton.classList.remove('hidden'); // Show the next button
+            nextButton.classList.remove('button.hidden'); // Show the next button
         }
 
         function nextCharacter() {

@@ -222,7 +222,7 @@ th, #summary-table th {
 
 /* Tiles for Spelling Game */
 .letter-tile, .answer-tile {
-    font-size: 24px;
+    font-size: 30px;
     padding: 10px 15px;
     border-radius: 5px;
     display: flex;
@@ -254,7 +254,7 @@ th, #summary-table th {
         padding: 8px 12px;
     }
     button {
-        font-size: 16px;
+        font-size: 30px;
         padding: 8px 16px;
     }
     #score {

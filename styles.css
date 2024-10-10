@@ -266,7 +266,8 @@ th, #summary-table th {
 
 
 #word-display {
-    font-size: 40px;
+    font-size: 50px;
+    font-weight: bold;
     margin-bottom: 20px;
 }
 

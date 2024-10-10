@@ -116,37 +116,38 @@
         }
 
         function endGame() {
-            const gameContainer = document.getElementById('game-container');
-            gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalQuestions}</p>`;
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.innerHTML = `<h1>Game Over!</h1><p>Your final score is: ${score} out of ${totalQuestions}</p>`;
 
-            if (incorrectAnswers.length > 0) {
-                // Create a table to display incorrect answers
-                let resultHTML = `
-                    <h2>Review Your Incorrect Answers:</h2>
-                    <table>
-                        <tr>
-                            <th>Character</th>
-                            <th>Your Answer</th>
-                            <th>Correct Answer</th>
-                        </tr>
-                `;
-                incorrectAnswers.forEach(item => {
-                    resultHTML += `
-                        <tr>
-                            <td>${item.image}</td>
-                            <td>${item.userAnswer}</td>
-                            <td>${item.character}</td>
-                        </tr>
-                    `;
-                });
-                resultHTML += `</table>`;
-                gameContainer.innerHTML += resultHTML;
-            } else {
-                gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
-            }
+    if (incorrectAnswers.length > 0) {
+        // Create a table to display incorrect answers
+        let resultHTML = `
+            <h2>Review Your Incorrect Answers:</h2>
+            <table>
+                <tr>
+                    <th>Character Image</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                </tr>
+        `;
+        incorrectAnswers.forEach(item => {
+            const characterObj = characters.find(char => char.name === item.character);
+            resultHTML += `
+                <tr>
+                    <td><img src="${characterObj.image}" alt="Image of ${characterObj.name}" width="100" height="100"></td>
+                    <td>${item.userAnswer}</td>
+                    <td>${item.character}</td>
+                </tr>
+            `;
+        });
+        resultHTML += `</table>`;
+        gameContainer.innerHTML += resultHTML;
+    } else {
+        gameContainer.innerHTML += `<p>Excellent work! You got all answers correct! 🎉</p>`;
+    }
 
-            gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
-        }
+    gameContainer.innerHTML += `<button onclick="location.reload()">Play Again</button>`;
+}
 
         function updateProgressBar() {
             const progressBar = document.getElementById('progress-bar');

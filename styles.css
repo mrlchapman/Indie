@@ -249,10 +249,3 @@ th, #summary-table th {
         font-size: 20px;
     }
 }
-#word-display {
-    font-size: 3rem; /* Increase the font size */
-    font-weight: bold; /* Make the text bold */
-    text-align: center; /* Center the text horizontally */
-    margin: 20px 0; /* Add some space around the word */
-    color: #c61190; /* Change the text colour (optional) */
-}

@@ -48,6 +48,7 @@
         let score = 0;
         let totalQuestions = characters.length;
         let incorrectAnswers = []; // Array to store incorrect answers
+        let answerSelected = false; // New flag to track if an answer is selected
 
         displayCharacter(); // Initial call to display the first character
 
@@ -58,11 +59,13 @@
             document.getElementById('message').textContent = '';
             document.getElementById('next-button').classList.add('button.hidden');
             enableAnswerButtons(true);
+            answerSelected = false; // Reset the flag when displaying a new character
             updateProgressBar();
         }
 
         function checkAnswer(answer) {
             enableAnswerButtons(false); // Disable answer buttons after an answer is given
+            answerSelected = true; // Set the flag to true when an answer is selected
 
             const characterObj = characters[currentCharacterIndex];
             const message = document.getElementById('message');
@@ -87,6 +90,17 @@
         }
 
         function nextCharacter() {
+            if (!answerSelected) {
+                // If no answer was selected, register it as incorrect
+                const characterObj = characters[currentCharacterIndex];
+                incorrectAnswers.push({
+                    character: characterObj.name,
+                    userAnswer: 'No answer selected'
+                });
+                document.getElementById('message').textContent = `Oops! The correct answer is '${characterObj.name}'. 🙁`;
+                document.getElementById('message').style.color = "red";
+            }
+
             currentCharacterIndex++;
             if (currentCharacterIndex < totalQuestions) {
                 displayCharacter();
@@ -149,4 +163,3 @@
     </script>
 </body>
 </html>
-

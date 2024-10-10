@@ -249,7 +249,7 @@ th, #summary-table th {
         font-size: 20px;
     }
 }
-#displayWord {
+#word-display {
     font-size: 3rem; /* Increase the font size */
     font-weight: bold; /* Make the text bold */
     text-align: center; /* Center the text horizontally */

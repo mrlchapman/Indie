@@ -152,8 +152,7 @@ th, td, #summary-table th, #summary-table td {
     padding: 8px;
     text-align: center;
     text-transform: lowercase;
-    font-size: 16px;
-    color: #c61190;
+    font-size: 24px;
 }
 th, #summary-table th {
     background-color: #c61190;

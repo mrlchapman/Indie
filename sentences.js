@@ -81,5 +81,9 @@ let sentences = [
         image: 'https://cdn.vectorstock.com/i/500p/14/41/a-girl-wearing-her-jersey-is-kicking-ball-vector-44061441.jpg',
         words: ['She', 'kicks', 'the', 'ball']
     },
+    {
+        image: 'images/Family.jpg',
+        words: ['Indie', 'loves', 'her', 'family']
+    },
     // Add more sentences as desired
 ];

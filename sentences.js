@@ -49,5 +49,37 @@ let sentences = [
         image: 'https://www.creativefabrica.com/wp-content/uploads/2023/05/28/Blue-cartoon-eyes-with-cute-eyelashes-K-Graphics-70762567-1-580x387.png',
         words: ['Look', 'at', 'me']
     },
+    {
+        image: 'https://img.freepik.com/free-vector/cute-cat-playing-yarn-ball-cartoon-illustration_138676-3256.jpg',
+        words: ['The', 'cat', 'plays', 'with', 'yarn']
+    },
+    {
+        image: 'https://static.vecteezy.com/system/resources/previews/009/205/765/non_2x/cartoon-dog-comic-animal-character-with-bone-vector.jpg',
+        words: ['The', 'dog', 'has', 'a', 'bone']
+    },
+    {
+        image: 'images/Beach.jpg',
+        words: ['We', 'build', 'a', 'sand', 'castle']
+    },
+    {
+        image: 'https://img.freepik.com/premium-photo/simple-animated-icecream-cartoon-character-white-background_854727-2260.jpg',
+        words: ['I', 'like', 'ice', 'cream']
+    },
+    {
+        image: 'https://www.shutterstock.com/image-vector/cute-little-smart-girl-sitting-600nw-2296810981.jpg',
+        words: ['She', 'reads', 'a', 'book']
+    },
+    {
+        image: 'https://as2.ftcdn.net/v2/jpg/03/99/47/99/1000_F_399479902_zXQuciICoV8po5BssDRzLRKssOo88ttx.jpg',
+        words: ['He', 'rides', 'his', 'scooter']
+    },
+    {
+        image: 'https://www.shutterstock.com/image-vector/happy-cute-kid-girl-play-600nw-1624576867.jpg',
+        words: ['She', 'jumps', 'rope']
+    },
+    {
+        image: 'https://cdn.vectorstock.com/i/500p/14/41/a-girl-wearing-her-jersey-is-kicking-ball-vector-44061441.jpg',
+        words: ['She', 'kicks', 'the', 'ball']
+    },
     // Add more sentences as desired
 ];
